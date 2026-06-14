@@ -4,15 +4,13 @@
 
 ## Introduction
 
-This repository contains **SleepUHD**, a research project that originates from an in-depth study of the original [DreamUHD](https://ojs.aaai.org/index.php/AAAI/article/view/32640) paper ("DreamUHD: Frequency Enhanced Variational Autoencoder for Ultra-High-Definition Image Restoration", AAAI 2025).
+This repository contains **SleepUHD**, a research project that originates from an in-depth study of the original [DreamUHD](https://ojs.aaai.org/index.php/AAAI/article/view/32609) paper ("DreamUHD: Frequency Enhanced Variational Autoencoder for Ultra-High-Definition Image Restoration", AAAI 2025).
 
 By carefully analysing the FE-VAE encoder architecture we identified a critical issue in the **SFAD (Spectral Feature Aggregation and Distribution)** block. Inside the encoder, SFAD performs a channel-wise low-pass filtering operation: it aggregates spectral features across channels and redistributes a smoothed version of them. While this improves global consistency, it has an unwanted side-effect — it **softens the inter-channel variations**, radically altering the individual contribution of each channel and ultimately **compromising the colour variations** that each channel was specifically capturing.
 
 To address this, we replaced the SFAD block with an **FCA (Frequency Channel Attention)** block, as proposed in:
 
-> Qilong Wang, Banggu Wu, Pengfei Zhu, Peihua Li, Wangmeng Zuo, and Qinghua Hu.  
-> *"FcaNet: Frequency Channel Attention Networks."*  
-> IEEE/CVF International Conference on Computer Vision (ICCV), 2021.
+> [FcaNet: Frequency Channel Attention Networks](https://arxiv.org/pdf/2012.11879)
 
 The FCA block leverages Discrete Cosine Transform (DCT)-based multi-spectral channel attention, allowing each channel to retain its distinctive frequency information while still performing meaningful channel recalibration — without the destructive averaging that SFAD introduced.
 
