@@ -1,0 +1,1371 @@
+2026-05-17 19:47:09,188 INFO: 
+Version Information: 
+	PyTorch: 2.10.0+cu128
+	TorchVision: 0.25.0+cu128
+2026-05-17 19:47:09,188 INFO: 
+  datasets:[
+    train:[
+      batch_size_per_gpu: 4
+      dataset_enlarge_ratio: 1
+      geometric_augs: True
+      gt_size: 256
+      io_backend:[
+        type: disk
+      ]
+      name: General_Image_Train
+      num_prefetch_queue: 4
+      num_worker_per_gpu: 4
+      prefetch_mode: cpu
+      rand_num: 0
+      root_file: /kaggle/working/vae_train_paths.txt
+      type: SinglecropImageDataset
+      use_flip: False
+      use_resize_crop: False
+      use_rot: False
+      use_shuffle: True
+      phase: train
+      scale: 1
+    ]
+    val:[
+      dataroot_lq: /kaggle/input/datasets/dany27/uhd-ll-dataset/testing_set/gt
+      geometric_augs: True
+      gt_size: 0
+      io_backend:[
+        type: disk
+      ]
+      name: General_Image_Valid
+      type: SingleImageDataset
+      use_flip: False
+      use_resize_crop: False
+      use_rot: False
+      phase: val
+      scale: 1
+    ]
+  ]
+  dist_params:[
+    backend: nccl
+    port: 29500
+  ]
+  find_unused_parameters: True
+  logger:[
+    print_freq: 100
+    save_checkpoint_freq: 5000.0
+    save_latest_freq: 1000.0
+    show_tf_imgs_freq: 5000.0
+    use_tb_logger: True
+  ]
+  manual_seed: 0
+  model_type: VAEModel
+  name: VAE_LL
+  network_g:[
+    ddconfig:[
+      attn_resolutions: [32, 64]
+      attn_type: restormer
+      ch: 16
+      ch_mult: [1, 2, 4, 4]
+      double_z: True
+      dropout: 0.0
+      freup_type: pad
+      in_channels: 3
+      num_res_blocks: 2
+      out_ch: 3
+      res_type: FEblock
+      resolution: 256
+      z_channels: 4
+    ]
+    embed_dim: 16
+    optim:[
+      lr: 5e-05
+    ]
+    type: AutoencoderKL_freup2
+  ]
+  num_gpu: 2
+  path:[
+    experiments_root: /kaggle/working/FcaDreamuhd/experiments/VAE_LL
+    log: /kaggle/working/FcaDreamuhd/experiments/VAE_LL
+    models: /kaggle/working/FcaDreamuhd/experiments/VAE_LL/models
+    pretrain_network_d: None
+    pretrain_network_g: None
+    pretrain_network_hq: None
+    resume_state: None
+    strict_load: False
+    training_states: /kaggle/working/FcaDreamuhd/experiments/VAE_LL/training_states
+    visualization: /kaggle/working/FcaDreamuhd/experiments/VAE_LL/visualization
+  ]
+  scale: 1
+  train:[
+    ema_decay: 0.9
+    fft_opt:[
+      loss_weight: 0.1
+      type: FFTLoss
+    ]
+    gan_opt:[
+      fake_label_val: 0.0
+      gan_type: hinge
+      loss_weight: 0
+      real_label_val: 1.0
+      type: GANLoss
+    ]
+    kl_opt:[
+      loss_weight: 1e-06
+      type: KlLoss
+    ]
+    net_d_init_iters: 0.0
+    net_d_iters: 1
+    optim_d:[
+      betas: [0.9, 0.99]
+      lr: 0.0004
+      type: Adam
+      weight_decay: 0
+    ]
+    optim_g:[
+      betas: [0.9, 0.99]
+      lr: 0.0005
+      type: AdamW
+      weight_decay: 0.001
+    ]
+    perceptual_opt:[
+      loss_weight: 0.5
+      type: LPIPSLoss
+    ]
+    pixel_opt:[
+      loss_weight: 1.0
+      reduction: mean
+      type: L1Loss
+    ]
+    scheduler:[
+      eta_mins: [0.0005, 1e-07]
+      periods: [2000, 120000]
+      restart_weights: [1, 1]
+      type: CosineAnnealingRestartCyclicLR
+    ]
+    total_iter: 122000
+    warmup_iter: -1
+  ]
+  val:[
+    key_metric: ssim
+    metrics:[
+      psnr:[
+        crop_border: 4
+        test_y_channel: True
+        type: psnr
+      ]
+      ssim:[
+        crop_border: 4
+        test_y_channel: True
+        type: ssim
+      ]
+    ]
+    save_img: False
+    val_freq: 3000.0
+  ]
+  dist: True
+  rank: 0
+  world_size: 2
+  auto_resume: True
+  is_train: True
+  root_path: /kaggle/working/FcaDreamuhd
+
+2026-05-17 19:47:28,389 INFO: Dataset [SinglecropImageDataset] - General_Image_Train is built.
+2026-05-17 19:47:28,390 INFO: Use cpu prefetch dataloader: num_prefetch_queue = 4
+2026-05-17 19:47:28,390 INFO: Training statistics:
+	Number of train images: 2000
+	Dataset enlarge ratio: 1
+	Batch size per gpu: 4
+	World size (gpu number): 2
+	Require iter number per epoch: 250
+	Total epochs: 488; iters: 122000.
+2026-05-17 19:47:28,454 INFO: Dataset [SingleImageDataset] - General_Image_Valid is built.
+2026-05-17 19:47:28,455 INFO: Number of val images/folders in General_Image_Valid: 150
+2026-05-17 19:47:31,286 INFO: Network [AutoencoderKL_freup2] is created.
+2026-05-17 19:47:31,897 INFO: Network: DistributedDataParallel - AutoencoderKL_freup2, with parameters: 1,039,935
+2026-05-17 19:47:31,897 INFO: AutoencoderKL_freup2(
+  (encoder): Encoder(
+    (conv_in): Conv2d(3, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (down): ModuleList(
+      (0): Module(
+        (block): ModuleList(
+          (0-1): 2 x FEblock(
+            (norm1): GroupNorm(4, 16, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(16, 8, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(16, 8, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(8, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=8)
+              (pointwise): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 8, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(8, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=8)
+              (pointwise): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=16, out_features=1, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=1, out_features=16, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+          )
+        )
+        (attn): ModuleList()
+        (downsample): Downsample(
+          (conv): Conv2d(16, 16, kernel_size=(3, 3), stride=(2, 2))
+        )
+      )
+      (1): Module(
+        (block): ModuleList(
+          (0): FEblock(
+            (norm1): GroupNorm(4, 16, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=16)
+              (pointwise): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 16, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=16)
+              (pointwise): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=16, out_features=1, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=1, out_features=16, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (nin_shortcut): Conv2d(16, 32, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (1): FEblock(
+            (norm1): GroupNorm(4, 32, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=16)
+              (pointwise): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 16, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=16)
+              (pointwise): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=32, out_features=2, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=2, out_features=32, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+          )
+        )
+        (attn): ModuleList()
+        (downsample): Downsample(
+          (conv): Conv2d(32, 32, kernel_size=(3, 3), stride=(2, 2))
+        )
+      )
+      (2): Module(
+        (block): ModuleList(
+          (0): FEblock(
+            (norm1): GroupNorm(4, 32, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+              (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 32, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+              (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=32, out_features=2, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=2, out_features=32, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (nin_shortcut): Conv2d(32, 64, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (1): FEblock(
+            (norm1): GroupNorm(4, 64, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+              (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 32, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+              (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=64, out_features=4, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=4, out_features=64, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+          )
+        )
+        (attn): ModuleList(
+          (0-1): 2 x TransformerBlock(
+            (norm1): LayerNorm(
+              (body): WithBias_LayerNorm()
+            )
+            (attn): Attention(
+              (qkv): Conv2d(64, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (qkv_dwconv): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (project_out): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            )
+            (norm2): LayerNorm(
+              (body): WithBias_LayerNorm()
+            )
+            (ffn): FeedForward(
+              (project_in): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (dwconv): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+              (project_out): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            )
+          )
+        )
+        (downsample): Downsample(
+          (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2))
+        )
+      )
+      (3): Module(
+        (block): ModuleList(
+          (0-1): 2 x FEblock(
+            (norm1): GroupNorm(4, 64, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+              (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 32, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+              (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=64, out_features=4, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=4, out_features=64, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+          )
+        )
+        (attn): ModuleList(
+          (0-1): 2 x TransformerBlock(
+            (norm1): LayerNorm(
+              (body): WithBias_LayerNorm()
+            )
+            (attn): Attention(
+              (qkv): Conv2d(64, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (qkv_dwconv): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (project_out): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            )
+            (norm2): LayerNorm(
+              (body): WithBias_LayerNorm()
+            )
+            (ffn): FeedForward(
+              (project_in): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (dwconv): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+              (project_out): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            )
+          )
+        )
+      )
+    )
+    (mid): Module(
+      (block_1): FEblock(
+        (norm1): GroupNorm(4, 64, eps=1e-06, affine=True)
+        (splitconv1): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+        (splitconv2): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+        (conv1): DepthwiseSeparableConv(
+          (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+          (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (norm2): GroupNorm(4, 32, eps=1e-06, affine=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+        (conv2): DepthwiseSeparableConv(
+          (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+          (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (mergeconv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+        (fca): MultiSpectralAttentionLayer(
+          (dct_layer): MultiSpectralDCTLayer()
+          (fc): Sequential(
+            (0): Linear(in_features=64, out_features=4, bias=False)
+            (1): ReLU(inplace=True)
+            (2): Linear(in_features=4, out_features=64, bias=False)
+            (3): Sigmoid()
+          )
+        )
+        (ampconv): Sequential(
+          (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+          (1): LeakyReLU(negative_slope=0.1, inplace=True)
+          (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (attn_1): TransformerBlock(
+        (norm1): LayerNorm(
+          (body): WithBias_LayerNorm()
+        )
+        (attn): Attention(
+          (qkv): Conv2d(64, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (qkv_dwconv): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+          (project_out): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (norm2): LayerNorm(
+          (body): WithBias_LayerNorm()
+        )
+        (ffn): FeedForward(
+          (project_in): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (dwconv): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+          (project_out): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (block_2): FEblock(
+        (norm1): GroupNorm(4, 64, eps=1e-06, affine=True)
+        (splitconv1): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+        (splitconv2): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+        (conv1): DepthwiseSeparableConv(
+          (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+          (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (norm2): GroupNorm(4, 32, eps=1e-06, affine=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+        (conv2): DepthwiseSeparableConv(
+          (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+          (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (mergeconv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+        (fca): MultiSpectralAttentionLayer(
+          (dct_layer): MultiSpectralDCTLayer()
+          (fc): Sequential(
+            (0): Linear(in_features=64, out_features=4, bias=False)
+            (1): ReLU(inplace=True)
+            (2): Linear(in_features=4, out_features=64, bias=False)
+            (3): Sigmoid()
+          )
+        )
+        (ampconv): Sequential(
+          (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+          (1): LeakyReLU(negative_slope=0.1, inplace=True)
+          (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+    )
+    (norm_out): GroupNorm(4, 64, eps=1e-06, affine=True)
+    (conv_out): Conv2d(64, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  )
+  (decoder): Decoder(
+    (conv_in): Conv2d(4, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (mid): Module(
+      (block_1): FEblock(
+        (norm1): GroupNorm(4, 64, eps=1e-06, affine=True)
+        (splitconv1): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+        (splitconv2): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+        (conv1): DepthwiseSeparableConv(
+          (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+          (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (norm2): GroupNorm(4, 32, eps=1e-06, affine=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+        (conv2): DepthwiseSeparableConv(
+          (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+          (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (mergeconv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+        (fca): MultiSpectralAttentionLayer(
+          (dct_layer): MultiSpectralDCTLayer()
+          (fc): Sequential(
+            (0): Linear(in_features=64, out_features=4, bias=False)
+            (1): ReLU(inplace=True)
+            (2): Linear(in_features=4, out_features=64, bias=False)
+            (3): Sigmoid()
+          )
+        )
+        (ampconv): Sequential(
+          (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+          (1): LeakyReLU(negative_slope=0.1, inplace=True)
+          (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (attn_1): TransformerBlock(
+        (norm1): LayerNorm(
+          (body): WithBias_LayerNorm()
+        )
+        (attn): Attention(
+          (qkv): Conv2d(64, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (qkv_dwconv): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+          (project_out): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (norm2): LayerNorm(
+          (body): WithBias_LayerNorm()
+        )
+        (ffn): FeedForward(
+          (project_in): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (dwconv): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+          (project_out): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (block_2): FEblock(
+        (norm1): GroupNorm(4, 64, eps=1e-06, affine=True)
+        (splitconv1): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+        (splitconv2): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+        (conv1): DepthwiseSeparableConv(
+          (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+          (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (norm2): GroupNorm(4, 32, eps=1e-06, affine=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+        (conv2): DepthwiseSeparableConv(
+          (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+          (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (mergeconv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+        (fca): MultiSpectralAttentionLayer(
+          (dct_layer): MultiSpectralDCTLayer()
+          (fc): Sequential(
+            (0): Linear(in_features=64, out_features=4, bias=False)
+            (1): ReLU(inplace=True)
+            (2): Linear(in_features=4, out_features=64, bias=False)
+            (3): Sigmoid()
+          )
+        )
+        (ampconv): Sequential(
+          (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+          (1): LeakyReLU(negative_slope=0.1, inplace=True)
+          (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+    )
+    (up): ModuleList(
+      (0): Module(
+        (block): ModuleList(
+          (0): FEblock(
+            (norm1): GroupNorm(4, 32, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(32, 8, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(32, 8, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(8, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=8)
+              (pointwise): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 8, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(8, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=8)
+              (pointwise): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=32, out_features=2, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=2, out_features=32, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (nin_shortcut): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (1-2): 2 x FEblock(
+            (norm1): GroupNorm(4, 16, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(16, 8, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(16, 8, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(8, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=8)
+              (pointwise): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 8, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(8, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=8)
+              (pointwise): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=16, out_features=1, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=1, out_features=16, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(8, 8, kernel_size=(1, 1), stride=(1, 1))
+            )
+          )
+        )
+        (attn): ModuleList()
+      )
+      (1): Module(
+        (block): ModuleList(
+          (0): FEblock(
+            (norm1): GroupNorm(4, 64, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(64, 16, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(64, 16, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=16)
+              (pointwise): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 16, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=16)
+              (pointwise): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=64, out_features=4, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=4, out_features=64, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (nin_shortcut): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (1-2): 2 x FEblock(
+            (norm1): GroupNorm(4, 32, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=16)
+              (pointwise): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 16, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=16)
+              (pointwise): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=32, out_features=2, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=2, out_features=32, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
+            )
+          )
+        )
+        (attn): ModuleList()
+        (upsample): fresadd(
+          (Fup): freup_Periodicpadding(
+            (amp_fuse): Sequential(
+              (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1)
+              (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (pha_fuse): Sequential(
+              (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1)
+              (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (post): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (fuse): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (2-3): 2 x Module(
+        (block): ModuleList(
+          (0-2): 3 x FEblock(
+            (norm1): GroupNorm(4, 64, eps=1e-06, affine=True)
+            (splitconv1): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+            (splitconv2): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1))
+            (conv1): DepthwiseSeparableConv(
+              (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+              (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (norm2): GroupNorm(4, 32, eps=1e-06, affine=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (conv2): DepthwiseSeparableConv(
+              (depthwise): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32)
+              (pointwise): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (mergeconv): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+            (fca): MultiSpectralAttentionLayer(
+              (dct_layer): MultiSpectralDCTLayer()
+              (fc): Sequential(
+                (0): Linear(in_features=64, out_features=4, bias=False)
+                (1): ReLU(inplace=True)
+                (2): Linear(in_features=4, out_features=64, bias=False)
+                (3): Sigmoid()
+              )
+            )
+            (ampconv): Sequential(
+              (0): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1, inplace=True)
+              (2): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
+            )
+          )
+        )
+        (attn): ModuleList(
+          (0-2): 3 x TransformerBlock(
+            (norm1): LayerNorm(
+              (body): WithBias_LayerNorm()
+            )
+            (attn): Attention(
+              (qkv): Conv2d(64, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (qkv_dwconv): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+              (project_out): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            )
+            (norm2): LayerNorm(
+              (body): WithBias_LayerNorm()
+            )
+            (ffn): FeedForward(
+              (project_in): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (dwconv): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+              (project_out): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            )
+          )
+        )
+        (upsample): fresadd(
+          (Fup): freup_Periodicpadding(
+            (amp_fuse): Sequential(
+              (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1)
+              (2): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (pha_fuse): Sequential(
+              (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+              (1): LeakyReLU(negative_slope=0.1)
+              (2): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (post): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (fuse): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+    )
+    (norm_out): GroupNorm(4, 16, eps=1e-06, affine=True)
+    (conv_out): Conv2d(16, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  )
+  (quant_conv): Conv2d(8, 32, kernel_size=(1, 1), stride=(1, 1))
+  (post_quant_conv): Conv2d(16, 4, kernel_size=(1, 1), stride=(1, 1))
+)
+2026-05-17 19:47:31,902 INFO: Use Exponential Moving Average with decay: 0.9
+2026-05-17 19:47:35,123 INFO: Network [AutoencoderKL_freup2] is created.
+2026-05-17 19:47:35,240 INFO: Loss [L1Loss] is created.
+2026-05-17 19:47:35,240 INFO: Loss [KlLoss] is created.
+2026-05-17 19:47:40,331 INFO: Loss [LPIPSLoss] is created.
+2026-05-17 19:47:40,332 INFO: Loss [GANLoss] is created.
+2026-05-17 19:47:40,332 INFO: Loss [FFTLoss] is created.
+2026-05-17 19:47:40,781 INFO: Model [VAEModel] is created.
+2026-05-17 19:48:03,589 INFO: Start training from epoch: 0, iter: 0
+2026-05-17 19:49:37,296 INFO: [VAE_L..][epoch:  0, iter:     100, lr:(5.000e-04,)] [eta: 20:04:19, time (data): 0.937 (0.286)] l_g_pix: 4.6872e-01 l_g_percep: 2.8825e-01 l_g_kl: 6.5342e-03 l_freq: 2.5254e-01 
+2026-05-17 19:50:38,679 INFO: [VAE_L..][epoch:  0, iter:     200, lr:(5.000e-04,)] [eta: 20:24:35, time (data): 0.775 (0.144)] l_g_pix: 3.4986e-01 l_g_percep: 2.5572e-01 l_g_kl: 1.0550e-02 l_freq: 2.1357e-01 
+2026-05-17 19:52:07,263 INFO: [VAE_L..][epoch:  1, iter:     300, lr:(5.000e-04,)] [eta: 23:34:00, time (data): 0.888 (0.248)] l_g_pix: 3.4862e-01 l_g_percep: 2.5353e-01 l_g_kl: 1.2432e-02 l_freq: 2.8486e-01 
+2026-05-17 19:53:07,393 INFO: [VAE_L..][epoch:  1, iter:     400, lr:(5.000e-04,)] [eta: 22:44:24, time (data): 0.744 (0.124)] l_g_pix: 3.0131e-01 l_g_percep: 2.5035e-01 l_g_kl: 1.2749e-02 l_freq: 1.2769e-01 
+2026-05-17 19:54:07,881 INFO: [VAE_L..][epoch:  1, iter:     500, lr:(5.000e-04,)] [eta: 22:15:39, time (data): 0.604 (0.001)] l_g_pix: 2.6630e-01 l_g_percep: 2.0289e-01 l_g_kl: 1.1467e-02 l_freq: 1.2250e-01 
+2026-05-17 19:55:35,194 INFO: [VAE_L..][epoch:  2, iter:     600, lr:(5.000e-04,)] [eta: 23:26:27, time (data): 0.740 (0.124)] l_g_pix: 2.0828e-01 l_g_percep: 1.7859e-01 l_g_kl: 1.1296e-02 l_freq: 2.0389e-01 
+2026-05-17 19:56:34,982 INFO: [VAE_L..][epoch:  2, iter:     700, lr:(5.000e-04,)] [eta: 22:57:15, time (data): 0.598 (0.001)] l_g_pix: 2.6242e-01 l_g_percep: 2.0183e-01 l_g_kl: 1.0843e-02 l_freq: 1.3740e-01 
+2026-05-17 19:58:02,672 INFO: [VAE_L..][epoch:  3, iter:     800, lr:(5.000e-04,)] [eta: 23:45:27, time (data): 0.739 (0.124)] l_g_pix: 3.2316e-01 l_g_percep: 2.5096e-01 l_g_kl: 1.1894e-02 l_freq: 1.8553e-01 
+2026-05-17 19:59:02,986 INFO: [VAE_L..][epoch:  3, iter:     900, lr:(5.000e-04,)] [eta: 23:21:18, time (data): 0.603 (0.001)] l_g_pix: 2.6373e-01 l_g_percep: 2.1399e-01 l_g_kl: 1.1360e-02 l_freq: 1.2772e-01 
+2026-05-17 20:00:03,911 INFO: [VAE_L..][epoch:  3, iter:   1,000, lr:(5.000e-04,)] [eta: 23:03:01, time (data): 0.606 (0.001)] l_g_pix: 2.8414e-01 l_g_percep: 2.2361e-01 l_g_kl: 1.3117e-02 l_freq: 3.1530e-01 
+2026-05-17 20:01:31,083 INFO: [VAE_L..][epoch:  4, iter:   1,100, lr:(5.000e-04,)] [eta: 23:35:54, time (data): 0.600 (0.001)] l_g_pix: 2.2399e-01 l_g_percep: 1.9123e-01 l_g_kl: 1.1606e-02 l_freq: 1.6424e-01 
+2026-05-17 20:02:30,522 INFO: [VAE_L..][epoch:  4, iter:   1,200, lr:(5.000e-04,)] [eta: 23:16:34, time (data): 0.597 (0.001)] l_g_pix: 2.5245e-01 l_g_percep: 1.9296e-01 l_g_kl: 1.1542e-02 l_freq: 1.3451e-01 
+2026-05-17 20:03:58,112 INFO: [VAE_L..][epoch:  5, iter:   1,300, lr:(5.000e-04,)] [eta: 23:43:35, time (data): 0.893 (0.256)] l_g_pix: 2.4247e-01 l_g_percep: 2.1323e-01 l_g_kl: 1.0641e-02 l_freq: 1.6141e-01 
+2026-05-17 20:04:58,000 INFO: [VAE_L..][epoch:  5, iter:   1,400, lr:(5.000e-04,)] [eta: 23:26:48, time (data): 0.741 (0.124)] l_g_pix: 1.8498e-01 l_g_percep: 1.5496e-01 l_g_kl: 1.1081e-02 l_freq: 2.0462e-01 
+2026-05-17 20:05:58,714 INFO: [VAE_L..][epoch:  5, iter:   1,500, lr:(5.000e-04,)] [eta: 23:13:13, time (data): 0.608 (0.001)] l_g_pix: 1.9904e-01 l_g_percep: 1.7899e-01 l_g_kl: 9.5778e-03 l_freq: 1.8058e-01 
+2026-05-17 20:07:25,790 INFO: [VAE_L..][epoch:  6, iter:   1,600, lr:(5.000e-04,)] [eta: 23:34:15, time (data): 0.744 (0.128)] l_g_pix: 2.1498e-01 l_g_percep: 1.8041e-01 l_g_kl: 1.2889e-02 l_freq: 2.1329e-01 
+2026-05-17 20:08:25,917 INFO: [VAE_L..][epoch:  6, iter:   1,700, lr:(5.000e-04,)] [eta: 23:20:53, time (data): 0.602 (0.001)] l_g_pix: 2.2671e-01 l_g_percep: 1.9556e-01 l_g_kl: 1.3006e-02 l_freq: 2.4161e-01 
+2026-05-17 20:09:54,349 INFO: [VAE_L..][epoch:  7, iter:   1,800, lr:(5.000e-04,)] [eta: 23:40:22, time (data): 0.749 (0.125)] l_g_pix: 1.7656e-01 l_g_percep: 1.4614e-01 l_g_kl: 1.3671e-02 l_freq: 1.2459e-01 
+2026-05-17 20:10:54,660 INFO: [VAE_L..][epoch:  7, iter:   1,900, lr:(5.000e-04,)] [eta: 23:28:02, time (data): 0.603 (0.001)] l_g_pix: 1.9288e-01 l_g_percep: 1.5248e-01 l_g_kl: 1.2547e-02 l_freq: 1.0777e-01 
+2026-05-17 20:11:55,294 INFO: [VAE_L..][epoch:  7, iter:   2,000, lr:(5.000e-04,)] [eta: 23:17:09, time (data): 0.605 (0.001)] l_g_pix: 2.2113e-01 l_g_percep: 1.8008e-01 l_g_kl: 1.3155e-02 l_freq: 1.6326e-01 
+2026-05-17 20:13:22,884 INFO: [VAE_L..][epoch:  8, iter:   2,100, lr:(5.000e-04,)] [eta: 23:32:51, time (data): 0.605 (0.001)] l_g_pix: 1.6081e-01 l_g_percep: 1.3411e-01 l_g_kl: 1.2205e-02 l_freq: 1.6863e-01 
+2026-05-17 20:14:23,925 INFO: [VAE_L..][epoch:  8, iter:   2,200, lr:(5.000e-04,)] [eta: 23:22:54, time (data): 0.608 (0.001)] l_g_pix: 1.6081e-01 l_g_percep: 1.3148e-01 l_g_kl: 1.1982e-02 l_freq: 7.9659e-02 
+2026-05-17 20:15:52,336 INFO: [VAE_L..][epoch:  9, iter:   2,300, lr:(5.000e-04,)] [eta: 23:37:28, time (data): 0.918 (0.270)] l_g_pix: 2.3600e-01 l_g_percep: 1.9832e-01 l_g_kl: 1.4418e-02 l_freq: 2.2425e-01 
+2026-05-17 20:16:52,635 INFO: [VAE_L..][epoch:  9, iter:   2,400, lr:(5.000e-04,)] [eta: 23:27:22, time (data): 0.751 (0.128)] l_g_pix: 1.4548e-01 l_g_percep: 1.2491e-01 l_g_kl: 1.2590e-02 l_freq: 1.2248e-01 
+2026-05-17 20:17:53,437 INFO: [VAE_L..][epoch:  9, iter:   2,500, lr:(5.000e-04,)] [eta: 23:18:23, time (data): 0.608 (0.001)] l_g_pix: 1.7379e-01 l_g_percep: 1.5112e-01 l_g_kl: 1.2660e-02 l_freq: 1.6540e-01 
+2026-05-17 20:19:20,533 INFO: [VAE_L..][epoch: 10, iter:   2,600, lr:(5.000e-04,)] [eta: 23:30:07, time (data): 0.748 (0.128)] l_g_pix: 1.9201e-01 l_g_percep: 1.6487e-01 l_g_kl: 1.3425e-02 l_freq: 2.0642e-01 
+2026-05-17 20:20:20,209 INFO: [VAE_L..][epoch: 10, iter:   2,700, lr:(5.000e-04,)] [eta: 23:20:43, time (data): 0.597 (0.001)] l_g_pix: 2.1418e-01 l_g_percep: 1.6987e-01 l_g_kl: 1.4201e-02 l_freq: 1.3279e-01 
+2026-05-17 20:21:48,563 INFO: [VAE_L..][epoch: 11, iter:   2,800, lr:(4.999e-04,)] [eta: 23:32:14, time (data): 0.750 (0.131)] l_g_pix: 1.7712e-01 l_g_percep: 1.4926e-01 l_g_kl: 1.2922e-02 l_freq: 1.9141e-01 
+2026-05-17 20:22:49,245 INFO: [VAE_L..][epoch: 11, iter:   2,900, lr:(4.999e-04,)] [eta: 23:23:56, time (data): 0.604 (0.001)] l_g_pix: 2.0722e-01 l_g_percep: 1.7267e-01 l_g_kl: 1.1928e-02 l_freq: 2.7165e-01 
+2026-05-17 20:23:49,983 INFO: [VAE_L..][epoch: 11, iter:   3,000, lr:(4.999e-04,)] [eta: 23:16:09, time (data): 0.606 (0.001)] l_g_pix: 2.0339e-01 l_g_percep: 1.7425e-01 l_g_kl: 1.3521e-02 l_freq: 2.2353e-01 
+2026-05-17 20:23:49,984 INFO: Only support single GPU validation.
+2026-05-17 20:35:37,708 INFO: Validation General_Image_Valid
+	 # psnr: 28.7938	Best: -inf @ -1 iter
+	 # ssim: 0.8972	Best: 0.8972 @ 3000 iter
+
+2026-05-17 20:37:15,708 INFO: [VAE_L..][epoch: 12, iter:   3,100, lr:(4.999e-04,)] [eta: 1 day, 7:04:53, time (data): 0.611 (0.001)] l_g_pix: 1.5414e-01 l_g_percep: 1.2975e-01 l_g_kl: 1.1654e-02 l_freq: 1.4526e-01 
+2026-05-17 20:38:16,746 INFO: [VAE_L..][epoch: 12, iter:   3,200, lr:(4.999e-04,)] [eta: 1 day, 6:42:51, time (data): 0.611 (0.001)] l_g_pix: 1.8127e-01 l_g_percep: 1.5696e-01 l_g_kl: 1.1076e-02 l_freq: 1.8245e-01 
+2026-05-17 20:39:45,545 INFO: [VAE_L..][epoch: 13, iter:   3,300, lr:(4.999e-04,)] [eta: 1 day, 6:38:44, time (data): 0.941 (0.303)] l_g_pix: 1.6239e-01 l_g_percep: 1.4483e-01 l_g_kl: 9.0240e-03 l_freq: 1.5137e-01 
+2026-05-17 20:40:46,231 INFO: [VAE_L..][epoch: 13, iter:   3,400, lr:(4.998e-04,)] [eta: 1 day, 6:18:27, time (data): 0.759 (0.139)] l_g_pix: 1.4001e-01 l_g_percep: 1.2153e-01 l_g_kl: 1.0687e-02 l_freq: 1.4334e-01 
+2026-05-17 20:41:47,464 INFO: [VAE_L..][epoch: 13, iter:   3,500, lr:(4.998e-04,)] [eta: 1 day, 5:59:33, time (data): 0.612 (0.001)] l_g_pix: 1.8455e-01 l_g_percep: 1.5753e-01 l_g_kl: 1.1193e-02 l_freq: 1.4540e-01 
+2026-05-17 20:43:15,648 INFO: [VAE_L..][epoch: 14, iter:   3,600, lr:(4.998e-04,)] [eta: 1 day, 5:56:26, time (data): 0.760 (0.137)] l_g_pix: 1.7568e-01 l_g_percep: 1.5399e-01 l_g_kl: 1.1149e-02 l_freq: 1.6569e-01 
+2026-05-17 20:44:16,560 INFO: [VAE_L..][epoch: 14, iter:   3,700, lr:(4.998e-04,)] [eta: 1 day, 5:38:52, time (data): 0.609 (0.001)] l_g_pix: 1.4776e-01 l_g_percep: 1.3040e-01 l_g_kl: 1.1802e-02 l_freq: 1.4481e-01 
+2026-05-17 20:45:44,867 INFO: [VAE_L..][epoch: 15, iter:   3,800, lr:(4.997e-04,)] [eta: 1 day, 5:36:22, time (data): 0.760 (0.134)] l_g_pix: 1.7621e-01 l_g_percep: 1.4508e-01 l_g_kl: 1.0733e-02 l_freq: 2.5228e-01 
+2026-05-17 20:46:45,389 INFO: [VAE_L..][epoch: 15, iter:   3,900, lr:(4.997e-04,)] [eta: 1 day, 5:19:54, time (data): 0.603 (0.001)] l_g_pix: 1.6010e-01 l_g_percep: 1.3348e-01 l_g_kl: 1.0201e-02 l_freq: 2.2836e-01 
+2026-05-17 20:47:45,802 INFO: [VAE_L..][epoch: 15, iter:   4,000, lr:(4.997e-04,)] [eta: 1 day, 5:04:10, time (data): 0.604 (0.001)] l_g_pix: 1.4399e-01 l_g_percep: 1.2554e-01 l_g_kl: 1.0346e-02 l_freq: 1.3146e-01 
+2026-05-17 20:49:13,322 INFO: [VAE_L..][epoch: 16, iter:   4,100, lr:(4.996e-04,)] [eta: 1 day, 5:02:07, time (data): 0.606 (0.001)] l_g_pix: 1.5671e-01 l_g_percep: 1.3878e-01 l_g_kl: 8.8235e-03 l_freq: 8.6895e-02 
+2026-05-17 20:50:13,365 INFO: [VAE_L..][epoch: 16, iter:   4,200, lr:(4.996e-04,)] [eta: 1 day, 4:47:16, time (data): 0.603 (0.001)] l_g_pix: 1.6887e-01 l_g_percep: 1.4039e-01 l_g_kl: 8.9927e-03 l_freq: 1.3318e-01 
+2026-05-17 20:51:40,994 INFO: [VAE_L..][epoch: 17, iter:   4,300, lr:(4.995e-04,)] [eta: 1 day, 4:45:39, time (data): 0.948 (0.314)] l_g_pix: 1.7060e-01 l_g_percep: 1.5199e-01 l_g_kl: 1.0187e-02 l_freq: 1.5246e-01 
+2026-05-17 20:52:40,874 INFO: [VAE_L..][epoch: 17, iter:   4,400, lr:(4.995e-04,)] [eta: 1 day, 4:31:40, time (data): 0.753 (0.139)] l_g_pix: 1.7048e-01 l_g_percep: 1.4810e-01 l_g_kl: 1.1044e-02 l_freq: 2.1341e-01 
+2026-05-17 20:53:41,544 INFO: [VAE_L..][epoch: 17, iter:   4,500, lr:(4.995e-04,)] [eta: 1 day, 4:18:37, time (data): 0.610 (0.001)] l_g_pix: 1.8077e-01 l_g_percep: 1.5363e-01 l_g_kl: 1.1101e-02 l_freq: 2.3825e-01 
+2026-05-17 20:55:08,777 INFO: [VAE_L..][epoch: 18, iter:   4,600, lr:(4.994e-04,)] [eta: 1 day, 4:17:23, time (data): 0.757 (0.137)] l_g_pix: 1.6208e-01 l_g_percep: 1.4006e-01 l_g_kl: 9.9776e-03 l_freq: 1.5867e-01 
+2026-05-17 20:56:08,795 INFO: [VAE_L..][epoch: 18, iter:   4,700, lr:(4.994e-04,)] [eta: 1 day, 4:04:49, time (data): 0.599 (0.001)] l_g_pix: 1.0666e-01 l_g_percep: 9.6450e-02 l_g_kl: 7.6959e-03 l_freq: 7.7106e-02 
+2026-05-17 20:57:37,179 INFO: [VAE_L..][epoch: 19, iter:   4,800, lr:(4.993e-04,)] [eta: 1 day, 4:04:17, time (data): 0.760 (0.138)] l_g_pix: 1.7404e-01 l_g_percep: 1.5316e-01 l_g_kl: 9.8616e-03 l_freq: 2.0268e-01 
+2026-05-17 20:58:37,115 INFO: [VAE_L..][epoch: 19, iter:   4,900, lr:(4.993e-04,)] [eta: 1 day, 3:52:22, time (data): 0.600 (0.001)] l_g_pix: 1.8669e-01 l_g_percep: 1.6302e-01 l_g_kl: 8.7133e-03 l_freq: 1.6573e-01 
+2026-05-17 20:59:37,591 INFO: [VAE_L..][epoch: 19, iter:   5,000, lr:(4.992e-04,)] [eta: 1 day, 3:41:07, time (data): 0.603 (0.001)] l_g_pix: 1.7557e-01 l_g_percep: 1.5191e-01 l_g_kl: 1.1148e-02 l_freq: 1.6207e-01 
+2026-05-17 20:59:37,592 INFO: Saving models and training states.
+2026-05-17 21:01:05,110 INFO: [VAE_L..][epoch: 20, iter:   5,100, lr:(4.992e-04,)] [eta: 1 day, 3:40:35, time (data): 0.601 (0.001)] l_g_pix: 1.1394e-01 l_g_percep: 1.0011e-01 l_g_kl: 7.9052e-03 l_freq: 7.9477e-02 
+2026-05-17 21:02:04,483 INFO: [VAE_L..][epoch: 20, iter:   5,200, lr:(4.991e-04,)] [eta: 1 day, 3:29:29, time (data): 0.597 (0.001)] l_g_pix: 1.5939e-01 l_g_percep: 1.4209e-01 l_g_kl: 8.6480e-03 l_freq: 1.4303e-01 
+2026-05-17 21:03:31,850 INFO: [VAE_L..][epoch: 21, iter:   5,300, lr:(4.991e-04,)] [eta: 1 day, 3:29:02, time (data): 0.970 (0.318)] l_g_pix: 1.9734e-01 l_g_percep: 1.7104e-01 l_g_kl: 8.9640e-03 l_freq: 2.1364e-01 
+2026-05-17 21:04:31,791 INFO: [VAE_L..][epoch: 21, iter:   5,400, lr:(4.990e-04,)] [eta: 1 day, 3:18:41, time (data): 0.757 (0.136)] l_g_pix: 1.5170e-01 l_g_percep: 1.3475e-01 l_g_kl: 8.0181e-03 l_freq: 1.4510e-01 
+2026-05-17 21:05:32,607 INFO: [VAE_L..][epoch: 21, iter:   5,500, lr:(4.990e-04,)] [eta: 1 day, 3:08:59, time (data): 0.613 (0.001)] l_g_pix: 2.4802e-01 l_g_percep: 1.9681e-01 l_g_kl: 9.2043e-03 l_freq: 2.3666e-01 
+2026-05-17 21:06:59,199 INFO: [VAE_L..][epoch: 22, iter:   5,600, lr:(4.989e-04,)] [eta: 1 day, 3:08:31, time (data): 0.759 (0.138)] l_g_pix: 1.4485e-01 l_g_percep: 1.2797e-01 l_g_kl: 8.6632e-03 l_freq: 1.6315e-01 
+2026-05-17 21:07:58,975 INFO: [VAE_L..][epoch: 22, iter:   5,700, lr:(4.988e-04,)] [eta: 1 day, 2:58:54, time (data): 0.599 (0.001)] l_g_pix: 1.3555e-01 l_g_percep: 1.1613e-01 l_g_kl: 8.6467e-03 l_freq: 1.0169e-01 
+2026-05-17 21:09:26,832 INFO: [VAE_L..][epoch: 23, iter:   5,800, lr:(4.988e-04,)] [eta: 1 day, 2:58:57, time (data): 0.762 (0.140)] l_g_pix: 2.0280e-01 l_g_percep: 1.7165e-01 l_g_kl: 9.7250e-03 l_freq: 3.0494e-01 
+2026-05-17 21:10:27,345 INFO: [VAE_L..][epoch: 23, iter:   5,900, lr:(4.987e-04,)] [eta: 1 day, 2:50:00, time (data): 0.602 (0.001)] l_g_pix: 1.4893e-01 l_g_percep: 1.3272e-01 l_g_kl: 9.4015e-03 l_freq: 1.5317e-01 
+2026-05-17 21:11:27,938 INFO: [VAE_L..][epoch: 23, iter:   6,000, lr:(4.986e-04,)] [eta: 1 day, 2:41:19, time (data): 0.604 (0.001)] l_g_pix: 1.4256e-01 l_g_percep: 1.2363e-01 l_g_kl: 8.6677e-03 l_freq: 1.3279e-01 
+2026-05-17 21:11:27,938 INFO: Only support single GPU validation.
+2026-05-17 21:23:11,247 INFO: Validation General_Image_Valid
+	 # psnr: 32.1206	Best: -inf @ -1 iter
+	 # ssim: 0.9067	Best: 0.9067 @ 6000 iter
+
+2026-05-17 21:24:48,722 INFO: [VAE_L..][epoch: 24, iter:   6,100, lr:(4.986e-04,)] [eta: 1 day, 6:27:15, time (data): 0.595 (0.001)] l_g_pix: 1.4648e-01 l_g_percep: 1.2450e-01 l_g_kl: 8.1641e-03 l_freq: 1.1079e-01 
+2026-05-17 21:25:48,462 INFO: [VAE_L..][epoch: 24, iter:   6,200, lr:(4.985e-04,)] [eta: 1 day, 6:14:50, time (data): 0.596 (0.001)] l_g_pix: 1.4680e-01 l_g_percep: 1.2301e-01 l_g_kl: 8.1688e-03 l_freq: 1.2364e-01 
+2026-05-17 21:27:15,469 INFO: [VAE_L..][epoch: 25, iter:   6,300, lr:(4.984e-04,)] [eta: 1 day, 6:11:07, time (data): 0.994 (0.352)] l_g_pix: 1.3830e-01 l_g_percep: 1.1747e-01 l_g_kl: 8.6574e-03 l_freq: 1.5669e-01 
+2026-05-17 21:28:15,281 INFO: [VAE_L..][epoch: 25, iter:   6,400, lr:(4.983e-04,)] [eta: 1 day, 5:59:17, time (data): 0.760 (0.144)] l_g_pix: 1.5359e-01 l_g_percep: 1.4063e-01 l_g_kl: 7.7485e-03 l_freq: 1.1699e-01 
+2026-05-17 21:29:16,028 INFO: [VAE_L..][epoch: 25, iter:   6,500, lr:(4.983e-04,)] [eta: 1 day, 5:48:03, time (data): 0.612 (0.001)] l_g_pix: 1.5989e-01 l_g_percep: 1.3384e-01 l_g_kl: 9.3297e-03 l_freq: 1.9041e-01 
+2026-05-17 21:30:43,606 INFO: [VAE_L..][epoch: 26, iter:   6,600, lr:(4.982e-04,)] [eta: 1 day, 5:44:58, time (data): 0.769 (0.148)] l_g_pix: 1.7814e-01 l_g_percep: 1.5321e-01 l_g_kl: 9.0640e-03 l_freq: 1.6011e-01 
+2026-05-17 21:31:42,874 INFO: [VAE_L..][epoch: 26, iter:   6,700, lr:(4.981e-04,)] [eta: 1 day, 5:33:48, time (data): 0.592 (0.001)] l_g_pix: 1.5116e-01 l_g_percep: 1.2702e-01 l_g_kl: 8.8241e-03 l_freq: 2.5136e-01 
+2026-05-17 21:33:10,038 INFO: [VAE_L..][epoch: 27, iter:   6,800, lr:(4.980e-04,)] [eta: 1 day, 5:30:48, time (data): 0.759 (0.146)] l_g_pix: 1.8603e-01 l_g_percep: 1.5964e-01 l_g_kl: 8.2470e-03 l_freq: 1.6245e-01 
+2026-05-17 21:34:10,195 INFO: [VAE_L..][epoch: 27, iter:   6,900, lr:(4.979e-04,)] [eta: 1 day, 5:20:21, time (data): 0.599 (0.001)] l_g_pix: 1.3711e-01 l_g_percep: 1.1634e-01 l_g_kl: 8.2737e-03 l_freq: 1.1676e-01 
+2026-05-17 21:35:11,239 INFO: [VAE_L..][epoch: 27, iter:   7,000, lr:(4.979e-04,)] [eta: 1 day, 5:10:25, time (data): 0.606 (0.001)] l_g_pix: 1.2797e-01 l_g_percep: 1.1100e-01 l_g_kl: 7.9692e-03 l_freq: 1.0269e-01 
+2026-05-17 21:36:38,732 INFO: [VAE_L..][epoch: 28, iter:   7,100, lr:(4.978e-04,)] [eta: 1 day, 5:07:51, time (data): 0.603 (0.001)] l_g_pix: 1.3023e-01 l_g_percep: 1.1163e-01 l_g_kl: 9.7315e-03 l_freq: 1.6185e-01 
+2026-05-17 21:37:38,659 INFO: [VAE_L..][epoch: 28, iter:   7,200, lr:(4.977e-04,)] [eta: 1 day, 4:58:00, time (data): 0.601 (0.001)] l_g_pix: 1.3904e-01 l_g_percep: 1.1672e-01 l_g_kl: 7.8747e-03 l_freq: 1.1168e-01 
+2026-05-17 21:39:06,827 INFO: [VAE_L..][epoch: 29, iter:   7,300, lr:(4.976e-04,)] [eta: 1 day, 4:55:48, time (data): 1.037 (0.375)] l_g_pix: 1.7631e-01 l_g_percep: 1.4857e-01 l_g_kl: 8.1149e-03 l_freq: 1.3779e-01 
+2026-05-17 21:40:07,151 INFO: [VAE_L..][epoch: 29, iter:   7,400, lr:(4.975e-04,)] [eta: 1 day, 4:46:25, time (data): 0.772 (0.147)] l_g_pix: 1.6980e-01 l_g_percep: 1.4937e-01 l_g_kl: 9.8555e-03 l_freq: 1.6656e-01 
+2026-05-17 21:41:07,824 INFO: [VAE_L..][epoch: 29, iter:   7,500, lr:(4.974e-04,)] [eta: 1 day, 4:37:21, time (data): 0.607 (0.001)] l_g_pix: 1.3404e-01 l_g_percep: 1.1570e-01 l_g_kl: 9.6852e-03 l_freq: 1.9083e-01 
+2026-05-17 21:42:34,750 INFO: [VAE_L..][epoch: 30, iter:   7,600, lr:(4.973e-04,)] [eta: 1 day, 4:35:05, time (data): 0.768 (0.150)] l_g_pix: 1.2131e-01 l_g_percep: 1.0002e-01 l_g_kl: 9.5170e-03 l_freq: 1.4779e-01 
+2026-05-17 21:43:34,825 INFO: [VAE_L..][epoch: 30, iter:   7,700, lr:(4.972e-04,)] [eta: 1 day, 4:26:11, time (data): 0.602 (0.001)] l_g_pix: 1.3605e-01 l_g_percep: 1.1763e-01 l_g_kl: 8.1222e-03 l_freq: 1.2295e-01 
+2026-05-17 21:45:02,019 INFO: [VAE_L..][epoch: 31, iter:   7,800, lr:(4.971e-04,)] [eta: 1 day, 4:24:07, time (data): 0.769 (0.148)] l_g_pix: 1.9174e-01 l_g_percep: 1.5785e-01 l_g_kl: 1.0282e-02 l_freq: 2.5540e-01 
+2026-05-17 21:46:01,991 INFO: [VAE_L..][epoch: 31, iter:   7,900, lr:(4.970e-04,)] [eta: 1 day, 4:15:31, time (data): 0.592 (0.001)] l_g_pix: 1.6167e-01 l_g_percep: 1.3803e-01 l_g_kl: 1.0079e-02 l_freq: 2.4526e-01 
+2026-05-17 21:47:02,631 INFO: [VAE_L..][epoch: 31, iter:   8,000, lr:(4.969e-04,)] [eta: 1 day, 4:07:15, time (data): 0.601 (0.001)] l_g_pix: 1.5041e-01 l_g_percep: 1.3466e-01 l_g_kl: 9.8681e-03 l_freq: 1.4308e-01 
+2026-05-17 21:48:29,867 INFO: [VAE_L..][epoch: 32, iter:   8,100, lr:(4.968e-04,)] [eta: 1 day, 4:05:24, time (data): 0.605 (0.001)] l_g_pix: 1.1243e-01 l_g_percep: 9.7714e-02 l_g_kl: 8.5150e-03 l_freq: 8.6849e-02 
+2026-05-17 21:49:30,248 INFO: [VAE_L..][epoch: 32, iter:   8,200, lr:(4.967e-04,)] [eta: 1 day, 3:57:21, time (data): 0.604 (0.001)] l_g_pix: 1.5245e-01 l_g_percep: 1.3001e-01 l_g_kl: 1.0166e-02 l_freq: 1.2032e-01 
+2026-05-17 21:50:57,646 INFO: [VAE_L..][epoch: 33, iter:   8,300, lr:(4.966e-04,)] [eta: 1 day, 3:55:39, time (data): 1.072 (0.409)] l_g_pix: 1.4908e-01 l_g_percep: 1.3211e-01 l_g_kl: 9.1992e-03 l_freq: 1.6140e-01 
+2026-05-17 21:51:58,214 INFO: [VAE_L..][epoch: 33, iter:   8,400, lr:(4.965e-04,)] [eta: 1 day, 3:47:54, time (data): 0.779 (0.152)] l_g_pix: 1.3675e-01 l_g_percep: 1.1774e-01 l_g_kl: 1.0614e-02 l_freq: 1.5730e-01 
+2026-05-17 21:52:58,713 INFO: [VAE_L..][epoch: 33, iter:   8,500, lr:(4.964e-04,)] [eta: 1 day, 3:40:17, time (data): 0.610 (0.001)] l_g_pix: 1.9118e-01 l_g_percep: 1.5805e-01 l_g_kl: 1.0970e-02 l_freq: 2.2740e-01 
+2026-05-17 21:54:26,018 INFO: [VAE_L..][epoch: 34, iter:   8,600, lr:(4.963e-04,)] [eta: 1 day, 3:38:43, time (data): 0.776 (0.155)] l_g_pix: 1.2240e-01 l_g_percep: 9.4706e-02 l_g_kl: 1.0492e-02 l_freq: 1.1521e-01 
+2026-05-17 21:55:25,879 INFO: [VAE_L..][epoch: 34, iter:   8,700, lr:(4.962e-04,)] [eta: 1 day, 3:31:12, time (data): 0.603 (0.001)] l_g_pix: 1.2056e-01 l_g_percep: 1.0580e-01 l_g_kl: 1.0311e-02 l_freq: 1.1513e-01 
+2026-05-17 21:56:53,723 INFO: [VAE_L..][epoch: 35, iter:   8,800, lr:(4.961e-04,)] [eta: 1 day, 3:29:50, time (data): 0.778 (0.152)] l_g_pix: 1.5332e-01 l_g_percep: 1.2558e-01 l_g_kl: 1.0729e-02 l_freq: 1.4544e-01 
+2026-05-17 21:57:53,834 INFO: [VAE_L..][epoch: 35, iter:   8,900, lr:(4.959e-04,)] [eta: 1 day, 3:22:35, time (data): 0.594 (0.001)] l_g_pix: 1.4419e-01 l_g_percep: 1.2795e-01 l_g_kl: 1.0972e-02 l_freq: 1.6418e-01 
+2026-05-17 21:58:54,448 INFO: [VAE_L..][epoch: 35, iter:   9,000, lr:(4.958e-04,)] [eta: 1 day, 3:15:35, time (data): 0.602 (0.001)] l_g_pix: 1.1866e-01 l_g_percep: 1.0421e-01 l_g_kl: 1.0621e-02 l_freq: 1.1811e-01 
+2026-05-17 21:58:54,449 INFO: Only support single GPU validation.
+2026-05-17 22:10:38,684 INFO: Validation General_Image_Valid
+	 # psnr: 31.6288	Best: -inf @ -1 iter
+	 # ssim: 0.9152	Best: 0.9152 @ 9000 iter
+
+2026-05-17 22:12:16,864 INFO: [VAE_L..][epoch: 36, iter:   9,100, lr:(4.957e-04,)] [eta: 1 day, 5:42:05, time (data): 0.609 (0.001)] l_g_pix: 1.5580e-01 l_g_percep: 1.3092e-01 l_g_kl: 1.2016e-02 l_freq: 2.4941e-01 
+2026-05-17 22:13:17,646 INFO: [VAE_L..][epoch: 36, iter:   9,200, lr:(4.956e-04,)] [eta: 1 day, 5:33:34, time (data): 0.608 (0.001)] l_g_pix: 1.4035e-01 l_g_percep: 1.2106e-01 l_g_kl: 1.0257e-02 l_freq: 2.1240e-01 
+2026-05-17 22:14:45,861 INFO: [VAE_L..][epoch: 37, iter:   9,300, lr:(4.955e-04,)] [eta: 1 day, 5:30:45, time (data): 1.127 (0.447)] l_g_pix: 1.7357e-01 l_g_percep: 1.5191e-01 l_g_kl: 1.1011e-02 l_freq: 1.8136e-01 
+2026-05-17 22:15:45,837 INFO: [VAE_L..][epoch: 37, iter:   9,400, lr:(4.953e-04,)] [eta: 1 day, 5:22:20, time (data): 0.785 (0.157)] l_g_pix: 1.5959e-01 l_g_percep: 1.4365e-01 l_g_kl: 1.0840e-02 l_freq: 1.8929e-01 
+2026-05-17 22:16:46,518 INFO: [VAE_L..][epoch: 37, iter:   9,500, lr:(4.952e-04,)] [eta: 1 day, 5:14:13, time (data): 0.612 (0.001)] l_g_pix: 1.1968e-01 l_g_percep: 9.8729e-02 l_g_kl: 9.6820e-03 l_freq: 1.2712e-01 
+2026-05-17 22:18:14,116 INFO: [VAE_L..][epoch: 38, iter:   9,600, lr:(4.951e-04,)] [eta: 1 day, 5:11:30, time (data): 0.784 (0.159)] l_g_pix: 1.3368e-01 l_g_percep: 1.2037e-01 l_g_kl: 1.0287e-02 l_freq: 1.3490e-01 
+2026-05-17 22:19:14,113 INFO: [VAE_L..][epoch: 38, iter:   9,700, lr:(4.949e-04,)] [eta: 1 day, 5:03:28, time (data): 0.599 (0.001)] l_g_pix: 1.2601e-01 l_g_percep: 1.1018e-01 l_g_kl: 1.0904e-02 l_freq: 1.3885e-01 
+2026-05-17 22:20:45,465 INFO: [VAE_L..][epoch: 39, iter:   9,800, lr:(4.948e-04,)] [eta: 1 day, 5:01:35, time (data): 0.806 (0.171)] l_g_pix: 1.2848e-01 l_g_percep: 1.1134e-01 l_g_kl: 1.1291e-02 l_freq: 1.3349e-01 
+2026-05-17 22:21:45,562 INFO: [VAE_L..][epoch: 39, iter:   9,900, lr:(4.947e-04,)] [eta: 1 day, 4:53:47, time (data): 0.597 (0.001)] l_g_pix: 1.0291e-01 l_g_percep: 8.8894e-02 l_g_kl: 9.4885e-03 l_freq: 7.3748e-02 
+2026-05-17 22:22:46,093 INFO: [VAE_L..][epoch: 39, iter:  10,000, lr:(4.945e-04,)] [eta: 1 day, 4:46:13, time (data): 0.602 (0.001)] l_g_pix: 1.3132e-01 l_g_percep: 1.1552e-01 l_g_kl: 1.1536e-02 l_freq: 1.4975e-01 
+2026-05-17 22:22:46,094 INFO: Saving models and training states.
+2026-05-17 22:24:13,659 INFO: [VAE_L..][epoch: 40, iter:  10,100, lr:(4.944e-04,)] [eta: 1 day, 4:43:46, time (data): 0.600 (0.001)] l_g_pix: 1.0881e-01 l_g_percep: 8.9745e-02 l_g_kl: 1.1633e-02 l_freq: 1.7163e-01 
+2026-05-17 22:25:13,159 INFO: [VAE_L..][epoch: 40, iter:  10,200, lr:(4.943e-04,)] [eta: 1 day, 4:36:13, time (data): 0.597 (0.001)] l_g_pix: 1.2812e-01 l_g_percep: 1.1146e-01 l_g_kl: 9.7400e-03 l_freq: 1.0653e-01 
+2026-05-17 22:26:41,393 INFO: [VAE_L..][epoch: 41, iter:  10,300, lr:(4.941e-04,)] [eta: 1 day, 4:33:59, time (data): 0.645 (0.001)] l_g_pix: 1.2634e-01 l_g_percep: 1.0752e-01 l_g_kl: 1.2167e-02 l_freq: 1.6079e-01 
+2026-05-17 22:27:41,295 INFO: [VAE_L..][epoch: 41, iter:  10,400, lr:(4.940e-04,)] [eta: 1 day, 4:26:42, time (data): 0.614 (0.001)] l_g_pix: 1.3326e-01 l_g_percep: 1.1546e-01 l_g_kl: 9.4847e-03 l_freq: 1.2278e-01 
+2026-05-17 22:28:42,188 INFO: [VAE_L..][epoch: 41, iter:  10,500, lr:(4.938e-04,)] [eta: 1 day, 4:19:42, time (data): 0.609 (0.001)] l_g_pix: 1.1054e-01 l_g_percep: 9.7024e-02 l_g_kl: 1.0861e-02 l_freq: 1.4211e-01 
+2026-05-17 22:30:09,588 INFO: [VAE_L..][epoch: 42, iter:  10,600, lr:(4.937e-04,)] [eta: 1 day, 4:17:28, time (data): 0.788 (0.164)] l_g_pix: 1.0779e-01 l_g_percep: 8.7448e-02 l_g_kl: 9.6121e-03 l_freq: 9.3449e-02 
+2026-05-17 22:31:09,157 INFO: [VAE_L..][epoch: 42, iter:  10,700, lr:(4.935e-04,)] [eta: 1 day, 4:10:25, time (data): 0.598 (0.001)] l_g_pix: 1.2258e-01 l_g_percep: 1.0727e-01 l_g_kl: 1.1294e-02 l_freq: 1.4391e-01 
+2026-05-17 22:32:36,644 INFO: [VAE_L..][epoch: 43, iter:  10,800, lr:(4.934e-04,)] [eta: 1 day, 4:08:17, time (data): 0.786 (0.165)] l_g_pix: 1.1251e-01 l_g_percep: 9.3436e-02 l_g_kl: 1.1092e-02 l_freq: 1.8656e-01 
+2026-05-17 22:33:37,026 INFO: [VAE_L..][epoch: 43, iter:  10,900, lr:(4.932e-04,)] [eta: 1 day, 4:01:33, time (data): 0.604 (0.001)] l_g_pix: 1.2861e-01 l_g_percep: 1.1023e-01 l_g_kl: 1.0066e-02 l_freq: 1.4582e-01 
+2026-05-17 22:34:38,014 INFO: [VAE_L..][epoch: 43, iter:  11,000, lr:(4.931e-04,)] [eta: 1 day, 3:55:01, time (data): 0.608 (0.001)] l_g_pix: 1.2592e-01 l_g_percep: 1.0769e-01 l_g_kl: 1.2007e-02 l_freq: 1.7104e-01 
+2026-05-17 22:36:06,313 INFO: [VAE_L..][epoch: 44, iter:  11,100, lr:(4.929e-04,)] [eta: 1 day, 3:53:08, time (data): 0.605 (0.001)] l_g_pix: 1.0366e-01 l_g_percep: 9.3856e-02 l_g_kl: 9.6073e-03 l_freq: 1.3391e-01 
+2026-05-17 22:37:06,578 INFO: [VAE_L..][epoch: 44, iter:  11,200, lr:(4.928e-04,)] [eta: 1 day, 3:46:38, time (data): 0.603 (0.001)] l_g_pix: 8.8593e-02 l_g_percep: 7.5719e-02 l_g_kl: 9.5390e-03 l_freq: 7.5663e-02 
+2026-05-17 22:38:35,378 INFO: [VAE_L..][epoch: 45, iter:  11,300, lr:(4.926e-04,)] [eta: 1 day, 3:44:54, time (data): 0.610 (0.001)] l_g_pix: 9.4477e-02 l_g_percep: 8.2035e-02 l_g_kl: 1.0196e-02 l_freq: 1.0559e-01 
+2026-05-17 22:39:35,516 INFO: [VAE_L..][epoch: 45, iter:  11,400, lr:(4.925e-04,)] [eta: 1 day, 3:38:31, time (data): 0.604 (0.001)] l_g_pix: 1.0576e-01 l_g_percep: 9.3422e-02 l_g_kl: 1.0335e-02 l_freq: 1.0403e-01 
+2026-05-17 22:40:36,401 INFO: [VAE_L..][epoch: 45, iter:  11,500, lr:(4.923e-04,)] [eta: 1 day, 3:32:22, time (data): 0.618 (0.001)] l_g_pix: 1.1446e-01 l_g_percep: 9.8599e-02 l_g_kl: 1.2114e-02 l_freq: 1.7049e-01 
+2026-05-17 22:42:04,455 INFO: [VAE_L..][epoch: 46, iter:  11,600, lr:(4.921e-04,)] [eta: 1 day, 3:30:36, time (data): 0.802 (0.165)] l_g_pix: 7.9084e-02 l_g_percep: 6.9693e-02 l_g_kl: 9.6240e-03 l_freq: 7.8252e-02 
+2026-05-17 22:43:05,420 INFO: [VAE_L..][epoch: 46, iter:  11,700, lr:(4.920e-04,)] [eta: 1 day, 3:24:36, time (data): 0.616 (0.001)] l_g_pix: 1.0195e-01 l_g_percep: 8.6893e-02 l_g_kl: 1.0211e-02 l_freq: 8.6867e-02 
+2026-05-17 22:44:33,442 INFO: [VAE_L..][epoch: 47, iter:  11,800, lr:(4.918e-04,)] [eta: 1 day, 3:22:53, time (data): 0.802 (0.170)] l_g_pix: 1.1175e-01 l_g_percep: 9.9813e-02 l_g_kl: 1.0387e-02 l_freq: 1.0614e-01 
+2026-05-17 22:45:33,698 INFO: [VAE_L..][epoch: 47, iter:  11,900, lr:(4.917e-04,)] [eta: 1 day, 3:16:53, time (data): 0.598 (0.001)] l_g_pix: 1.3097e-01 l_g_percep: 1.1252e-01 l_g_kl: 1.0648e-02 l_freq: 1.1706e-01 
+2026-05-17 22:46:33,966 INFO: [VAE_L..][epoch: 47, iter:  12,000, lr:(4.915e-04,)] [eta: 1 day, 3:10:59, time (data): 0.601 (0.001)] l_g_pix: 1.2109e-01 l_g_percep: 1.0375e-01 l_g_kl: 1.1699e-02 l_freq: 1.6952e-01 
+2026-05-17 22:46:33,967 INFO: Only support single GPU validation.
+2026-05-17 22:58:15,219 INFO: Validation General_Image_Valid
+	 # psnr: 32.4259	Best: -inf @ -1 iter
+	 # ssim: 0.9218	Best: 0.9218 @ 12000 iter
+
+2026-05-17 22:59:54,939 INFO: [VAE_L..][epoch: 48, iter:  12,100, lr:(4.913e-04,)] [eta: 1 day, 4:57:16, time (data): 0.613 (0.001)] l_g_pix: 1.3085e-01 l_g_percep: 1.1503e-01 l_g_kl: 1.1290e-02 l_freq: 1.6445e-01 
+2026-05-17 23:00:54,564 INFO: [VAE_L..][epoch: 48, iter:  12,200, lr:(4.911e-04,)] [eta: 1 day, 4:50:24, time (data): 0.601 (0.001)] l_g_pix: 9.9395e-02 l_g_percep: 9.0033e-02 l_g_kl: 1.0142e-02 l_freq: 9.3594e-02 
+2026-05-17 23:02:21,248 INFO: [VAE_L..][epoch: 49, iter:  12,300, lr:(4.910e-04,)] [eta: 1 day, 4:47:40, time (data): 0.593 (0.001)] l_g_pix: 1.1293e-01 l_g_percep: 9.8015e-02 l_g_kl: 1.0349e-02 l_freq: 1.1598e-01 
+2026-05-17 23:03:20,730 INFO: [VAE_L..][epoch: 49, iter:  12,400, lr:(4.908e-04,)] [eta: 1 day, 4:40:56, time (data): 0.594 (0.001)] l_g_pix: 1.1018e-01 l_g_percep: 9.8342e-02 l_g_kl: 1.0694e-02 l_freq: 1.0208e-01 
+2026-05-17 23:04:20,659 INFO: [VAE_L..][epoch: 49, iter:  12,500, lr:(4.906e-04,)] [eta: 1 day, 4:34:21, time (data): 0.610 (0.001)] l_g_pix: 1.2953e-01 l_g_percep: 1.0767e-01 l_g_kl: 1.0984e-02 l_freq: 2.3511e-01 
+2026-05-17 23:05:47,855 INFO: [VAE_L..][epoch: 50, iter:  12,600, lr:(4.904e-04,)] [eta: 1 day, 4:31:49, time (data): 0.800 (0.174)] l_g_pix: 1.1470e-01 l_g_percep: 9.8105e-02 l_g_kl: 1.0772e-02 l_freq: 1.9164e-01 
+2026-05-17 23:06:47,604 INFO: [VAE_L..][epoch: 50, iter:  12,700, lr:(4.903e-04,)] [eta: 1 day, 4:25:21, time (data): 0.599 (0.001)] l_g_pix: 1.0282e-01 l_g_percep: 9.0072e-02 l_g_kl: 1.0690e-02 l_freq: 1.2119e-01 
+2026-05-17 23:08:14,462 INFO: [VAE_L..][epoch: 51, iter:  12,800, lr:(4.901e-04,)] [eta: 1 day, 4:22:50, time (data): 0.796 (0.179)] l_g_pix: 1.1137e-01 l_g_percep: 1.0108e-01 l_g_kl: 1.0634e-02 l_freq: 1.3830e-01 
+2026-05-17 23:09:13,892 INFO: [VAE_L..][epoch: 51, iter:  12,900, lr:(4.899e-04,)] [eta: 1 day, 4:16:27, time (data): 0.591 (0.001)] l_g_pix: 1.5275e-01 l_g_percep: 1.3047e-01 l_g_kl: 1.0559e-02 l_freq: 1.7289e-01 
+2026-05-17 23:10:13,791 INFO: [VAE_L..][epoch: 51, iter:  13,000, lr:(4.897e-04,)] [eta: 1 day, 4:10:14, time (data): 0.597 (0.001)] l_g_pix: 8.6486e-02 l_g_percep: 7.2212e-02 l_g_kl: 1.0564e-02 l_freq: 9.7736e-02 
+2026-05-17 23:11:39,780 INFO: [VAE_L..][epoch: 52, iter:  13,100, lr:(4.895e-04,)] [eta: 1 day, 4:07:42, time (data): 0.599 (0.001)] l_g_pix: 9.7114e-02 l_g_percep: 7.9624e-02 l_g_kl: 1.0834e-02 l_freq: 1.1392e-01 
+2026-05-17 23:12:39,174 INFO: [VAE_L..][epoch: 52, iter:  13,200, lr:(4.893e-04,)] [eta: 1 day, 4:01:33, time (data): 0.595 (0.001)] l_g_pix: 1.2185e-01 l_g_percep: 1.0525e-01 l_g_kl: 1.1212e-02 l_freq: 1.4056e-01 
+2026-05-17 23:14:06,594 INFO: [VAE_L..][epoch: 53, iter:  13,300, lr:(4.891e-04,)] [eta: 1 day, 3:59:16, time (data): 0.596 (0.001)] l_g_pix: 9.8814e-02 l_g_percep: 8.7158e-02 l_g_kl: 1.0490e-02 l_freq: 1.1538e-01 
+2026-05-17 23:15:06,409 INFO: [VAE_L..][epoch: 53, iter:  13,400, lr:(4.890e-04,)] [eta: 1 day, 3:53:17, time (data): 0.598 (0.001)] l_g_pix: 1.6169e-01 l_g_percep: 1.2997e-01 l_g_kl: 1.2027e-02 l_freq: 2.4966e-01 
+2026-05-17 23:16:06,210 INFO: [VAE_L..][epoch: 53, iter:  13,500, lr:(4.888e-04,)] [eta: 1 day, 3:47:23, time (data): 0.613 (0.001)] l_g_pix: 8.7197e-02 l_g_percep: 7.5842e-02 l_g_kl: 1.0235e-02 l_freq: 1.1477e-01 
+2026-05-17 23:17:32,011 INFO: [VAE_L..][epoch: 54, iter:  13,600, lr:(4.886e-04,)] [eta: 1 day, 3:44:59, time (data): 0.797 (0.178)] l_g_pix: 1.3280e-01 l_g_percep: 1.0946e-01 l_g_kl: 1.2048e-02 l_freq: 1.8069e-01 
+2026-05-17 23:18:31,447 INFO: [VAE_L..][epoch: 54, iter:  13,700, lr:(4.884e-04,)] [eta: 1 day, 3:39:08, time (data): 0.595 (0.001)] l_g_pix: 1.4447e-01 l_g_percep: 1.3071e-01 l_g_kl: 1.1194e-02 l_freq: 1.6093e-01 
+2026-05-17 23:19:58,385 INFO: [VAE_L..][epoch: 55, iter:  13,800, lr:(4.882e-04,)] [eta: 1 day, 3:36:57, time (data): 0.803 (0.179)] l_g_pix: 1.3304e-01 l_g_percep: 1.1558e-01 l_g_kl: 9.9579e-03 l_freq: 1.6790e-01 
+2026-05-17 23:20:57,556 INFO: [VAE_L..][epoch: 55, iter:  13,900, lr:(4.880e-04,)] [eta: 1 day, 3:31:11, time (data): 0.590 (0.001)] l_g_pix: 9.5557e-02 l_g_percep: 8.7311e-02 l_g_kl: 9.8523e-03 l_freq: 8.0709e-02 
+2026-05-17 23:21:57,331 INFO: [VAE_L..][epoch: 55, iter:  14,000, lr:(4.878e-04,)] [eta: 1 day, 3:25:34, time (data): 0.596 (0.001)] l_g_pix: 1.1739e-01 l_g_percep: 1.0070e-01 l_g_kl: 1.1194e-02 l_freq: 1.6956e-01 
+2026-05-17 23:23:24,098 INFO: [VAE_L..][epoch: 56, iter:  14,100, lr:(4.876e-04,)] [eta: 1 day, 3:23:27, time (data): 0.594 (0.001)] l_g_pix: 9.6502e-02 l_g_percep: 8.4675e-02 l_g_kl: 1.0282e-02 l_freq: 1.2107e-01 
+2026-05-17 23:24:23,445 INFO: [VAE_L..][epoch: 56, iter:  14,200, lr:(4.874e-04,)] [eta: 1 day, 3:17:52, time (data): 0.594 (0.001)] l_g_pix: 1.2437e-01 l_g_percep: 1.1119e-01 l_g_kl: 1.0720e-02 l_freq: 1.2074e-01 
+2026-05-17 23:25:50,923 INFO: [VAE_L..][epoch: 57, iter:  14,300, lr:(4.872e-04,)] [eta: 1 day, 3:15:53, time (data): 0.598 (0.001)] l_g_pix: 1.7247e-01 l_g_percep: 1.4934e-01 l_g_kl: 1.0906e-02 l_freq: 3.0468e-01 
+2026-05-17 23:26:50,167 INFO: [VAE_L..][epoch: 57, iter:  14,400, lr:(4.869e-04,)] [eta: 1 day, 3:10:24, time (data): 0.594 (0.001)] l_g_pix: 1.4966e-01 l_g_percep: 1.3041e-01 l_g_kl: 1.1296e-02 l_freq: 2.3409e-01 
+2026-05-17 23:27:50,249 INFO: [VAE_L..][epoch: 57, iter:  14,500, lr:(4.867e-04,)] [eta: 1 day, 3:05:04, time (data): 0.613 (0.001)] l_g_pix: 1.0470e-01 l_g_percep: 9.1719e-02 l_g_kl: 1.0613e-02 l_freq: 1.3958e-01 
+2026-05-17 23:29:16,377 INFO: [VAE_L..][epoch: 58, iter:  14,600, lr:(4.865e-04,)] [eta: 1 day, 3:03:00, time (data): 0.807 (0.191)] l_g_pix: 9.5151e-02 l_g_percep: 8.2416e-02 l_g_kl: 1.1196e-02 l_freq: 1.1958e-01 
+2026-05-17 23:30:16,142 INFO: [VAE_L..][epoch: 58, iter:  14,700, lr:(4.863e-04,)] [eta: 1 day, 2:57:44, time (data): 0.604 (0.001)] l_g_pix: 9.7514e-02 l_g_percep: 8.8239e-02 l_g_kl: 1.0093e-02 l_freq: 9.6183e-02 
+2026-05-17 23:31:42,649 INFO: [VAE_L..][epoch: 59, iter:  14,800, lr:(4.861e-04,)] [eta: 1 day, 2:55:44, time (data): 0.810 (0.190)] l_g_pix: 1.1705e-01 l_g_percep: 1.0060e-01 l_g_kl: 1.0609e-02 l_freq: 1.2860e-01 
+2026-05-17 23:32:42,120 INFO: [VAE_L..][epoch: 59, iter:  14,900, lr:(4.859e-04,)] [eta: 1 day, 2:50:31, time (data): 0.593 (0.001)] l_g_pix: 1.1900e-01 l_g_percep: 1.0365e-01 l_g_kl: 1.0894e-02 l_freq: 1.3131e-01 
+2026-05-17 23:33:42,014 INFO: [VAE_L..][epoch: 59, iter:  15,000, lr:(4.857e-04,)] [eta: 1 day, 2:45:25, time (data): 0.598 (0.001)] l_g_pix: 1.1008e-01 l_g_percep: 9.7317e-02 l_g_kl: 1.0838e-02 l_freq: 1.2752e-01 
+2026-05-17 23:33:42,014 INFO: Saving models and training states.
+2026-05-17 23:33:42,271 INFO: Only support single GPU validation.
+2026-05-17 23:45:23,919 INFO: Validation General_Image_Valid
+	 # psnr: 35.0243	Best: -inf @ -1 iter
+	 # ssim: 0.9240	Best: 0.9240 @ 15000 iter
+
+2026-05-17 23:47:03,205 INFO: [VAE_L..][epoch: 60, iter:  15,100, lr:(4.854e-04,)] [eta: 1 day, 4:07:49, time (data): 0.589 (0.001)] l_g_pix: 1.0093e-01 l_g_percep: 8.3872e-02 l_g_kl: 1.1200e-02 l_freq: 1.1337e-01 
+2026-05-17 23:48:02,592 INFO: [VAE_L..][epoch: 60, iter:  15,200, lr:(4.852e-04,)] [eta: 1 day, 4:02:06, time (data): 0.593 (0.001)] l_g_pix: 9.6383e-02 l_g_percep: 8.3139e-02 l_g_kl: 9.9611e-03 l_freq: 9.3330e-02 
+2026-05-17 23:49:30,047 INFO: [VAE_L..][epoch: 61, iter:  15,300, lr:(4.850e-04,)] [eta: 1 day, 3:59:42, time (data): 0.609 (0.001)] l_g_pix: 1.2575e-01 l_g_percep: 1.0842e-01 l_g_kl: 1.1067e-02 l_freq: 1.4979e-01 
+2026-05-17 23:50:29,854 INFO: [VAE_L..][epoch: 61, iter:  15,400, lr:(4.848e-04,)] [eta: 1 day, 3:54:08, time (data): 0.600 (0.001)] l_g_pix: 1.3040e-01 l_g_percep: 1.1292e-01 l_g_kl: 1.1218e-02 l_freq: 1.6610e-01 
+2026-05-17 23:51:29,608 INFO: [VAE_L..][epoch: 61, iter:  15,500, lr:(4.846e-04,)] [eta: 1 day, 3:48:37, time (data): 0.620 (0.001)] l_g_pix: 1.1184e-01 l_g_percep: 9.6902e-02 l_g_kl: 1.0928e-02 l_freq: 1.2475e-01 
+2026-05-17 23:52:56,279 INFO: [VAE_L..][epoch: 62, iter:  15,600, lr:(4.843e-04,)] [eta: 1 day, 3:46:13, time (data): 0.821 (0.193)] l_g_pix: 1.0802e-01 l_g_percep: 9.4683e-02 l_g_kl: 1.0399e-02 l_freq: 1.5207e-01 
+2026-05-17 23:53:55,278 INFO: [VAE_L..][epoch: 62, iter:  15,700, lr:(4.841e-04,)] [eta: 1 day, 3:40:42, time (data): 0.593 (0.001)] l_g_pix: 8.2158e-02 l_g_percep: 6.9128e-02 l_g_kl: 1.0257e-02 l_freq: 1.1187e-01 
+2026-05-17 23:55:22,337 INFO: [VAE_L..][epoch: 63, iter:  15,800, lr:(4.839e-04,)] [eta: 1 day, 3:38:24, time (data): 0.821 (0.194)] l_g_pix: 8.4169e-02 l_g_percep: 7.5083e-02 l_g_kl: 9.7812e-03 l_freq: 8.6682e-02 
+2026-05-17 23:56:21,308 INFO: [VAE_L..][epoch: 63, iter:  15,900, lr:(4.836e-04,)] [eta: 1 day, 3:32:58, time (data): 0.585 (0.001)] l_g_pix: 9.1296e-02 l_g_percep: 7.9518e-02 l_g_kl: 1.0718e-02 l_freq: 1.1034e-01 
+2026-05-17 23:57:20,934 INFO: [VAE_L..][epoch: 63, iter:  16,000, lr:(4.834e-04,)] [eta: 1 day, 3:27:41, time (data): 0.594 (0.001)] l_g_pix: 1.2012e-01 l_g_percep: 1.0584e-01 l_g_kl: 1.0114e-02 l_freq: 1.3987e-01 
+2026-05-17 23:58:47,416 INFO: [VAE_L..][epoch: 64, iter:  16,100, lr:(4.832e-04,)] [eta: 1 day, 3:25:23, time (data): 0.590 (0.001)] l_g_pix: 1.4644e-01 l_g_percep: 1.2938e-01 l_g_kl: 1.0369e-02 l_freq: 1.8670e-01 
+2026-05-17 23:59:46,337 INFO: [VAE_L..][epoch: 64, iter:  16,200, lr:(4.829e-04,)] [eta: 1 day, 3:20:06, time (data): 0.589 (0.001)] l_g_pix: 9.2821e-02 l_g_percep: 8.1720e-02 l_g_kl: 9.4964e-03 l_freq: 8.5914e-02 
+2026-05-18 00:01:13,958 INFO: [VAE_L..][epoch: 65, iter:  16,300, lr:(4.827e-04,)] [eta: 1 day, 3:17:58, time (data): 0.596 (0.001)] l_g_pix: 9.7861e-02 l_g_percep: 8.0263e-02 l_g_kl: 1.1349e-02 l_freq: 1.2024e-01 
+2026-05-18 00:02:13,203 INFO: [VAE_L..][epoch: 65, iter:  16,400, lr:(4.825e-04,)] [eta: 1 day, 3:12:47, time (data): 0.593 (0.001)] l_g_pix: 7.9021e-02 l_g_percep: 7.0947e-02 l_g_kl: 9.6019e-03 l_freq: 7.7266e-02 
+2026-05-18 00:03:13,013 INFO: [VAE_L..][epoch: 65, iter:  16,500, lr:(4.822e-04,)] [eta: 1 day, 3:07:44, time (data): 0.619 (0.001)] l_g_pix: 1.3568e-01 l_g_percep: 1.2009e-01 l_g_kl: 1.1087e-02 l_freq: 1.9781e-01 
+2026-05-18 00:04:39,617 INFO: [VAE_L..][epoch: 66, iter:  16,600, lr:(4.820e-04,)] [eta: 1 day, 3:05:33, time (data): 0.828 (0.202)] l_g_pix: 1.2932e-01 l_g_percep: 1.1032e-01 l_g_kl: 1.1941e-02 l_freq: 2.0656e-01 
+2026-05-18 00:05:38,737 INFO: [VAE_L..][epoch: 66, iter:  16,700, lr:(4.817e-04,)] [eta: 1 day, 3:00:30, time (data): 0.588 (0.001)] l_g_pix: 9.5529e-02 l_g_percep: 8.5261e-02 l_g_kl: 1.0480e-02 l_freq: 1.2074e-01 
+2026-05-18 00:07:06,226 INFO: [VAE_L..][epoch: 67, iter:  16,800, lr:(4.815e-04,)] [eta: 1 day, 2:58:27, time (data): 0.833 (0.205)] l_g_pix: 9.9678e-02 l_g_percep: 8.6646e-02 l_g_kl: 1.0131e-02 l_freq: 1.4463e-01 
+2026-05-18 00:08:06,032 INFO: [VAE_L..][epoch: 67, iter:  16,900, lr:(4.812e-04,)] [eta: 1 day, 2:53:33, time (data): 0.587 (0.001)] l_g_pix: 1.1585e-01 l_g_percep: 9.5893e-02 l_g_kl: 1.0855e-02 l_freq: 1.5773e-01 
+2026-05-18 00:09:06,083 INFO: [VAE_L..][epoch: 67, iter:  17,000, lr:(4.810e-04,)] [eta: 1 day, 2:48:43, time (data): 0.599 (0.001)] l_g_pix: 1.0637e-01 l_g_percep: 9.3684e-02 l_g_kl: 1.0085e-02 l_freq: 1.2299e-01 
+2026-05-18 00:10:32,836 INFO: [VAE_L..][epoch: 68, iter:  17,100, lr:(4.807e-04,)] [eta: 1 day, 2:46:39, time (data): 0.590 (0.001)] l_g_pix: 1.2885e-01 l_g_percep: 1.1268e-01 l_g_kl: 1.0989e-02 l_freq: 1.6948e-01 
+2026-05-18 00:11:32,836 INFO: [VAE_L..][epoch: 68, iter:  17,200, lr:(4.805e-04,)] [eta: 1 day, 2:41:53, time (data): 0.599 (0.001)] l_g_pix: 1.0440e-01 l_g_percep: 8.5600e-02 l_g_kl: 1.0496e-02 l_freq: 1.5490e-01 
+2026-05-18 00:13:00,241 INFO: [VAE_L..][epoch: 69, iter:  17,300, lr:(4.802e-04,)] [eta: 1 day, 2:39:55, time (data): 0.609 (0.001)] l_g_pix: 1.0815e-01 l_g_percep: 9.3555e-02 l_g_kl: 1.0912e-02 l_freq: 1.4975e-01 
+2026-05-18 00:14:00,099 INFO: [VAE_L..][epoch: 69, iter:  17,400, lr:(4.800e-04,)] [eta: 1 day, 2:35:12, time (data): 0.600 (0.001)] l_g_pix: 9.5907e-02 l_g_percep: 8.5932e-02 l_g_kl: 9.9130e-03 l_freq: 1.0253e-01 
+2026-05-18 00:15:00,285 INFO: [VAE_L..][epoch: 69, iter:  17,500, lr:(4.797e-04,)] [eta: 1 day, 2:30:34, time (data): 0.641 (0.001)] l_g_pix: 8.8265e-02 l_g_percep: 6.9152e-02 l_g_kl: 9.9722e-03 l_freq: 9.3924e-02 
+2026-05-18 00:16:27,202 INFO: [VAE_L..][epoch: 70, iter:  17,600, lr:(4.794e-04,)] [eta: 1 day, 2:28:36, time (data): 0.843 (0.213)] l_g_pix: 1.0816e-01 l_g_percep: 9.2461e-02 l_g_kl: 1.0740e-02 l_freq: 1.3376e-01 
+2026-05-18 00:17:26,714 INFO: [VAE_L..][epoch: 70, iter:  17,700, lr:(4.792e-04,)] [eta: 1 day, 2:23:58, time (data): 0.600 (0.001)] l_g_pix: 1.0756e-01 l_g_percep: 9.0818e-02 l_g_kl: 9.7779e-03 l_freq: 1.2096e-01 
+2026-05-18 00:18:53,640 INFO: [VAE_L..][epoch: 71, iter:  17,800, lr:(4.789e-04,)] [eta: 1 day, 2:22:02, time (data): 0.840 (0.212)] l_g_pix: 1.0019e-01 l_g_percep: 8.7964e-02 l_g_kl: 1.0038e-02 l_freq: 1.3476e-01 
+2026-05-18 00:19:53,485 INFO: [VAE_L..][epoch: 71, iter:  17,900, lr:(4.787e-04,)] [eta: 1 day, 2:17:29, time (data): 0.577 (0.001)] l_g_pix: 1.1455e-01 l_g_percep: 9.1506e-02 l_g_kl: 1.0621e-02 l_freq: 1.6245e-01 
+2026-05-18 00:20:53,125 INFO: [VAE_L..][epoch: 71, iter:  18,000, lr:(4.784e-04,)] [eta: 1 day, 2:12:57, time (data): 0.594 (0.001)] l_g_pix: 1.0471e-01 l_g_percep: 9.3452e-02 l_g_kl: 9.9938e-03 l_freq: 1.2120e-01 
+2026-05-18 00:20:53,125 INFO: Only support single GPU validation.
+2026-05-18 00:32:35,020 INFO: Validation General_Image_Valid
+	 # psnr: 35.5339	Best: -inf @ -1 iter
+	 # ssim: 0.9251	Best: 0.9251 @ 18000 iter
+
+2026-05-18 00:34:14,286 INFO: [VAE_L..][epoch: 72, iter:  18,100, lr:(4.781e-04,)] [eta: 1 day, 3:19:24, time (data): 0.598 (0.001)] l_g_pix: 9.2443e-02 l_g_percep: 7.8647e-02 l_g_kl: 1.0465e-02 l_freq: 1.0842e-01 
+2026-05-18 00:35:14,639 INFO: [VAE_L..][epoch: 72, iter:  18,200, lr:(4.779e-04,)] [eta: 1 day, 3:14:34, time (data): 0.603 (0.001)] l_g_pix: 1.1520e-01 l_g_percep: 9.7132e-02 l_g_kl: 1.1560e-02 l_freq: 1.9760e-01 
+2026-05-18 00:36:42,349 INFO: [VAE_L..][epoch: 73, iter:  18,300, lr:(4.776e-04,)] [eta: 1 day, 3:12:21, time (data): 0.600 (0.001)] l_g_pix: 9.9029e-02 l_g_percep: 8.7493e-02 l_g_kl: 1.0231e-02 l_freq: 1.2757e-01 
+2026-05-18 00:37:42,288 INFO: [VAE_L..][epoch: 73, iter:  18,400, lr:(4.773e-04,)] [eta: 1 day, 3:07:32, time (data): 0.599 (0.001)] l_g_pix: 9.2119e-02 l_g_percep: 7.8975e-02 l_g_kl: 9.9569e-03 l_freq: 8.4802e-02 
+2026-05-18 00:38:43,719 INFO: [VAE_L..][epoch: 73, iter:  18,500, lr:(4.770e-04,)] [eta: 1 day, 3:02:54, time (data): 0.733 (0.002)] l_g_pix: 9.9864e-02 l_g_percep: 8.1931e-02 l_g_kl: 1.0104e-02 l_freq: 1.1827e-01 
+2026-05-18 00:40:10,511 INFO: [VAE_L..][epoch: 74, iter:  18,600, lr:(4.768e-04,)] [eta: 1 day, 3:00:40, time (data): 0.858 (0.228)] l_g_pix: 1.0026e-01 l_g_percep: 8.3835e-02 l_g_kl: 1.0454e-02 l_freq: 1.3474e-01 
+2026-05-18 00:41:09,916 INFO: [VAE_L..][epoch: 74, iter:  18,700, lr:(4.765e-04,)] [eta: 1 day, 2:55:54, time (data): 0.595 (0.001)] l_g_pix: 1.1838e-01 l_g_percep: 9.9977e-02 l_g_kl: 1.0186e-02 l_freq: 1.7310e-01 
+2026-05-18 00:42:37,467 INFO: [VAE_L..][epoch: 75, iter:  18,800, lr:(4.762e-04,)] [eta: 1 day, 2:53:46, time (data): 0.857 (0.229)] l_g_pix: 9.1773e-02 l_g_percep: 8.2268e-02 l_g_kl: 9.8982e-03 l_freq: 1.1797e-01 
+2026-05-18 00:43:36,994 INFO: [VAE_L..][epoch: 75, iter:  18,900, lr:(4.759e-04,)] [eta: 1 day, 2:49:05, time (data): 0.583 (0.001)] l_g_pix: 9.9971e-02 l_g_percep: 8.8327e-02 l_g_kl: 9.8201e-03 l_freq: 1.1910e-01 
+2026-05-18 00:44:37,166 INFO: [VAE_L..][epoch: 75, iter:  19,000, lr:(4.757e-04,)] [eta: 1 day, 2:44:30, time (data): 0.601 (0.001)] l_g_pix: 1.3380e-01 l_g_percep: 1.1804e-01 l_g_kl: 1.0470e-02 l_freq: 1.7496e-01 
+2026-05-18 00:46:04,491 INFO: [VAE_L..][epoch: 76, iter:  19,100, lr:(4.754e-04,)] [eta: 1 day, 2:42:23, time (data): 0.584 (0.001)] l_g_pix: 1.1797e-01 l_g_percep: 1.0575e-01 l_g_kl: 1.0542e-02 l_freq: 1.3600e-01 
+2026-05-18 00:47:04,140 INFO: [VAE_L..][epoch: 76, iter:  19,200, lr:(4.751e-04,)] [eta: 1 day, 2:37:49, time (data): 0.596 (0.001)] l_g_pix: 8.6016e-02 l_g_percep: 7.6833e-02 l_g_kl: 9.7090e-03 l_freq: 1.1035e-01 
+2026-05-18 00:48:31,865 INFO: [VAE_L..][epoch: 77, iter:  19,300, lr:(4.748e-04,)] [eta: 1 day, 2:35:46, time (data): 0.620 (0.001)] l_g_pix: 1.2187e-01 l_g_percep: 1.0566e-01 l_g_kl: 1.0370e-02 l_freq: 1.2512e-01 
+2026-05-18 00:49:31,090 INFO: [VAE_L..][epoch: 77, iter:  19,400, lr:(4.745e-04,)] [eta: 1 day, 2:31:13, time (data): 0.593 (0.001)] l_g_pix: 1.1539e-01 l_g_percep: 1.0202e-01 l_g_kl: 9.7397e-03 l_freq: 1.1944e-01 
+2026-05-18 00:50:31,828 INFO: [VAE_L..][epoch: 77, iter:  19,500, lr:(4.742e-04,)] [eta: 1 day, 2:26:50, time (data): 0.783 (0.003)] l_g_pix: 1.2934e-01 l_g_percep: 1.0636e-01 l_g_kl: 1.0969e-02 l_freq: 1.8615e-01 
+2026-05-18 00:51:58,682 INFO: [VAE_L..][epoch: 78, iter:  19,600, lr:(4.739e-04,)] [eta: 1 day, 2:24:46, time (data): 0.866 (0.234)] l_g_pix: 7.7234e-02 l_g_percep: 6.6636e-02 l_g_kl: 1.0066e-02 l_freq: 8.8670e-02 
+2026-05-18 00:52:58,886 INFO: [VAE_L..][epoch: 78, iter:  19,700, lr:(4.736e-04,)] [eta: 1 day, 2:20:24, time (data): 0.605 (0.001)] l_g_pix: 1.2084e-01 l_g_percep: 1.0343e-01 l_g_kl: 9.7519e-03 l_freq: 1.0097e-01 
+2026-05-18 00:54:26,375 INFO: [VAE_L..][epoch: 79, iter:  19,800, lr:(4.734e-04,)] [eta: 1 day, 2:18:24, time (data): 0.870 (0.240)] l_g_pix: 1.3463e-01 l_g_percep: 1.1557e-01 l_g_kl: 1.0795e-02 l_freq: 1.8620e-01 
+2026-05-18 00:55:25,933 INFO: [VAE_L..][epoch: 79, iter:  19,900, lr:(4.731e-04,)] [eta: 1 day, 2:14:02, time (data): 0.595 (0.001)] l_g_pix: 8.3595e-02 l_g_percep: 7.2158e-02 l_g_kl: 9.1699e-03 l_freq: 9.8922e-02 
+2026-05-18 00:56:26,574 INFO: [VAE_L..][epoch: 79, iter:  20,000, lr:(4.728e-04,)] [eta: 1 day, 2:09:47, time (data): 0.606 (0.001)] l_g_pix: 1.1222e-01 l_g_percep: 9.6627e-02 l_g_kl: 1.0806e-02 l_freq: 1.5456e-01 
+2026-05-18 00:56:26,575 INFO: Saving models and training states.
+2026-05-18 00:57:54,103 INFO: [VAE_L..][epoch: 80, iter:  20,100, lr:(4.725e-04,)] [eta: 1 day, 2:07:50, time (data): 0.739 (0.123)] l_g_pix: 8.4666e-02 l_g_percep: 6.8263e-02 l_g_kl: 9.8208e-03 l_freq: 9.0011e-02 
+2026-05-18 00:58:53,187 INFO: [VAE_L..][epoch: 80, iter:  20,200, lr:(4.722e-04,)] [eta: 1 day, 2:03:30, time (data): 0.591 (0.001)] l_g_pix: 8.3701e-02 l_g_percep: 7.1619e-02 l_g_kl: 1.0156e-02 l_freq: 9.5064e-02 
+2026-05-18 01:00:20,396 INFO: [VAE_L..][epoch: 81, iter:  20,300, lr:(4.719e-04,)] [eta: 1 day, 2:01:33, time (data): 0.731 (0.121)] l_g_pix: 1.1593e-01 l_g_percep: 1.0085e-01 l_g_kl: 1.0029e-02 l_freq: 1.5023e-01 
+2026-05-18 01:01:19,688 INFO: [VAE_L..][epoch: 81, iter:  20,400, lr:(4.716e-04,)] [eta: 1 day, 1:57:17, time (data): 0.593 (0.001)] l_g_pix: 1.3285e-01 l_g_percep: 1.1930e-01 l_g_kl: 9.8800e-03 l_freq: 1.3712e-01 
+2026-05-18 01:02:19,952 INFO: [VAE_L..][epoch: 81, iter:  20,500, lr:(4.713e-04,)] [eta: 1 day, 1:53:09, time (data): 0.598 (0.001)] l_g_pix: 1.4220e-01 l_g_percep: 1.2192e-01 l_g_kl: 1.0013e-02 l_freq: 2.3667e-01 
+2026-05-18 01:03:47,651 INFO: [VAE_L..][epoch: 82, iter:  20,600, lr:(4.710e-04,)] [eta: 1 day, 1:51:16, time (data): 0.618 (0.001)] l_g_pix: 1.1140e-01 l_g_percep: 9.7687e-02 l_g_kl: 1.0140e-02 l_freq: 1.4884e-01 
+2026-05-18 01:04:47,338 INFO: [VAE_L..][epoch: 82, iter:  20,700, lr:(4.706e-04,)] [eta: 1 day, 1:47:08, time (data): 0.607 (0.001)] l_g_pix: 9.6349e-02 l_g_percep: 8.0848e-02 l_g_kl: 9.5578e-03 l_freq: 1.0163e-01 
+2026-05-18 01:06:14,265 INFO: [VAE_L..][epoch: 83, iter:  20,800, lr:(4.703e-04,)] [eta: 1 day, 1:45:13, time (data): 0.877 (0.245)] l_g_pix: 1.0373e-01 l_g_percep: 8.9997e-02 l_g_kl: 1.0476e-02 l_freq: 1.4581e-01 
+2026-05-18 01:07:13,484 INFO: [VAE_L..][epoch: 83, iter:  20,900, lr:(4.700e-04,)] [eta: 1 day, 1:41:05, time (data): 0.732 (0.121)] l_g_pix: 9.8461e-02 l_g_percep: 8.5498e-02 l_g_kl: 1.0394e-02 l_freq: 1.3839e-01 
+2026-05-18 01:08:13,532 INFO: [VAE_L..][epoch: 83, iter:  21,000, lr:(4.697e-04,)] [eta: 1 day, 1:37:02, time (data): 0.601 (0.001)] l_g_pix: 9.9139e-02 l_g_percep: 8.7212e-02 l_g_kl: 1.0770e-02 l_freq: 1.6246e-01 
+2026-05-18 01:08:13,532 INFO: Only support single GPU validation.
+2026-05-18 01:19:54,578 INFO: Validation General_Image_Valid
+	 # psnr: 34.8794	Best: -inf @ -1 iter
+	 # ssim: 0.9247	Best: 0.9251 @ 18000 iter
+
+2026-05-18 01:21:33,861 INFO: [VAE_L..][epoch: 84, iter:  21,100, lr:(4.694e-04,)] [eta: 1 day, 2:32:01, time (data): 0.801 (0.120)] l_g_pix: 8.2136e-02 l_g_percep: 7.0265e-02 l_g_kl: 9.6495e-03 l_freq: 9.3643e-02 
+2026-05-18 01:22:34,150 INFO: [VAE_L..][epoch: 84, iter:  21,200, lr:(4.691e-04,)] [eta: 1 day, 2:27:43, time (data): 0.602 (0.001)] l_g_pix: 8.6492e-02 l_g_percep: 7.7099e-02 l_g_kl: 9.7321e-03 l_freq: 9.2756e-02 
+2026-05-18 01:24:01,162 INFO: [VAE_L..][epoch: 85, iter:  21,300, lr:(4.688e-04,)] [eta: 1 day, 2:25:33, time (data): 0.740 (0.120)] l_g_pix: 1.1959e-01 l_g_percep: 1.0449e-01 l_g_kl: 1.0421e-02 l_freq: 1.7487e-01 
+2026-05-18 01:25:00,333 INFO: [VAE_L..][epoch: 85, iter:  21,400, lr:(4.685e-04,)] [eta: 1 day, 2:21:13, time (data): 0.590 (0.001)] l_g_pix: 9.1056e-02 l_g_percep: 8.3370e-02 l_g_kl: 8.8705e-03 l_freq: 7.9898e-02 
+2026-05-18 01:26:00,623 INFO: [VAE_L..][epoch: 85, iter:  21,500, lr:(4.681e-04,)] [eta: 1 day, 2:16:59, time (data): 0.597 (0.001)] l_g_pix: 1.1650e-01 l_g_percep: 9.8870e-02 l_g_kl: 1.0150e-02 l_freq: 1.5242e-01 
+2026-05-18 01:27:28,051 INFO: [VAE_L..][epoch: 86, iter:  21,600, lr:(4.678e-04,)] [eta: 1 day, 2:14:54, time (data): 0.604 (0.001)] l_g_pix: 7.3305e-02 l_g_percep: 6.3414e-02 l_g_kl: 9.8899e-03 l_freq: 8.6267e-02 
+2026-05-18 01:28:27,534 INFO: [VAE_L..][epoch: 86, iter:  21,700, lr:(4.675e-04,)] [eta: 1 day, 2:10:40, time (data): 0.599 (0.001)] l_g_pix: 9.7108e-02 l_g_percep: 8.6004e-02 l_g_kl: 8.9022e-03 l_freq: 1.1382e-01 
+2026-05-18 01:29:54,629 INFO: [VAE_L..][epoch: 87, iter:  21,800, lr:(4.672e-04,)] [eta: 1 day, 2:08:34, time (data): 0.894 (0.256)] l_g_pix: 1.3395e-01 l_g_percep: 1.1734e-01 l_g_kl: 9.9296e-03 l_freq: 1.6603e-01 
+2026-05-18 01:30:53,877 INFO: [VAE_L..][epoch: 87, iter:  21,900, lr:(4.668e-04,)] [eta: 1 day, 2:04:22, time (data): 0.737 (0.123)] l_g_pix: 1.2142e-01 l_g_percep: 1.0776e-01 l_g_kl: 9.9443e-03 l_freq: 1.5397e-01 
+2026-05-18 01:31:53,933 INFO: [VAE_L..][epoch: 87, iter:  22,000, lr:(4.665e-04,)] [eta: 1 day, 2:00:15, time (data): 0.601 (0.001)] l_g_pix: 9.7407e-02 l_g_percep: 8.5635e-02 l_g_kl: 9.6463e-03 l_freq: 1.1253e-01 
+2026-05-18 01:33:20,932 INFO: [VAE_L..][epoch: 88, iter:  22,100, lr:(4.662e-04,)] [eta: 1 day, 1:58:11, time (data): 0.742 (0.124)] l_g_pix: 1.0446e-01 l_g_percep: 9.1162e-02 l_g_kl: 9.4860e-03 l_freq: 1.1722e-01 
+2026-05-18 01:34:20,517 INFO: [VAE_L..][epoch: 88, iter:  22,200, lr:(4.659e-04,)] [eta: 1 day, 1:54:05, time (data): 0.596 (0.001)] l_g_pix: 8.4956e-02 l_g_percep: 7.4860e-02 l_g_kl: 8.9913e-03 l_freq: 8.5161e-02 
+2026-05-18 01:35:47,799 INFO: [VAE_L..][epoch: 89, iter:  22,300, lr:(4.655e-04,)] [eta: 1 day, 1:52:04, time (data): 0.742 (0.125)] l_g_pix: 8.6858e-02 l_g_percep: 7.6544e-02 l_g_kl: 9.6342e-03 l_freq: 1.3334e-01 
+2026-05-18 01:36:47,177 INFO: [VAE_L..][epoch: 89, iter:  22,400, lr:(4.652e-04,)] [eta: 1 day, 1:47:59, time (data): 0.592 (0.001)] l_g_pix: 9.0282e-02 l_g_percep: 7.8698e-02 l_g_kl: 9.6505e-03 l_freq: 9.7735e-02 
+2026-05-18 01:37:47,340 INFO: [VAE_L..][epoch: 89, iter:  22,500, lr:(4.649e-04,)] [eta: 1 day, 1:44:00, time (data): 0.597 (0.001)] l_g_pix: 9.3210e-02 l_g_percep: 7.9505e-02 l_g_kl: 1.0451e-02 l_freq: 1.1476e-01 
+2026-05-18 01:39:14,271 INFO: [VAE_L..][epoch: 90, iter:  22,600, lr:(4.645e-04,)] [eta: 1 day, 1:41:59, time (data): 0.602 (0.001)] l_g_pix: 1.0005e-01 l_g_percep: 8.7928e-02 l_g_kl: 1.0024e-02 l_freq: 1.3735e-01 
+2026-05-18 01:40:13,522 INFO: [VAE_L..][epoch: 90, iter:  22,700, lr:(4.642e-04,)] [eta: 1 day, 1:37:58, time (data): 0.597 (0.001)] l_g_pix: 1.0754e-01 l_g_percep: 9.3890e-02 l_g_kl: 1.0658e-02 l_freq: 1.5253e-01 
+2026-05-18 01:41:40,546 INFO: [VAE_L..][epoch: 91, iter:  22,800, lr:(4.639e-04,)] [eta: 1 day, 1:36:00, time (data): 0.910 (0.273)] l_g_pix: 1.0898e-01 l_g_percep: 9.4588e-02 l_g_kl: 1.0428e-02 l_freq: 1.7498e-01 
+2026-05-18 01:42:39,854 INFO: [VAE_L..][epoch: 91, iter:  22,900, lr:(4.635e-04,)] [eta: 1 day, 1:32:01, time (data): 0.741 (0.127)] l_g_pix: 1.0151e-01 l_g_percep: 8.9266e-02 l_g_kl: 9.3322e-03 l_freq: 1.0581e-01 
+2026-05-18 01:43:39,821 INFO: [VAE_L..][epoch: 91, iter:  23,000, lr:(4.632e-04,)] [eta: 1 day, 1:28:08, time (data): 0.601 (0.001)] l_g_pix: 1.3659e-01 l_g_percep: 1.1888e-01 l_g_kl: 1.0412e-02 l_freq: 2.1660e-01 
+2026-05-18 01:45:10,040 INFO: [VAE_L..][epoch: 92, iter:  23,100, lr:(4.628e-04,)] [eta: 1 day, 1:26:25, time (data): 0.763 (0.131)] l_g_pix: 1.1827e-01 l_g_percep: 1.0127e-01 l_g_kl: 9.5126e-03 l_freq: 1.5797e-01 
+2026-05-18 01:46:10,644 INFO: [VAE_L..][epoch: 92, iter:  23,200, lr:(4.625e-04,)] [eta: 1 day, 1:22:36, time (data): 0.605 (0.001)] l_g_pix: 8.4996e-02 l_g_percep: 7.6585e-02 l_g_kl: 9.1670e-03 l_freq: 9.5778e-02 
+2026-05-18 01:47:38,564 INFO: [VAE_L..][epoch: 93, iter:  23,300, lr:(4.621e-04,)] [eta: 1 day, 1:20:44, time (data): 0.753 (0.130)] l_g_pix: 1.0242e-01 l_g_percep: 8.9260e-02 l_g_kl: 1.0066e-02 l_freq: 1.7008e-01 
+2026-05-18 01:48:38,771 INFO: [VAE_L..][epoch: 93, iter:  23,400, lr:(4.618e-04,)] [eta: 1 day, 1:16:56, time (data): 0.601 (0.001)] l_g_pix: 1.1640e-01 l_g_percep: 1.0194e-01 l_g_kl: 9.6818e-03 l_freq: 1.7999e-01 
+2026-05-18 01:49:38,760 INFO: [VAE_L..][epoch: 93, iter:  23,500, lr:(4.614e-04,)] [eta: 1 day, 1:13:08, time (data): 0.600 (0.001)] l_g_pix: 8.6959e-02 l_g_percep: 7.4863e-02 l_g_kl: 9.4132e-03 l_freq: 1.1107e-01 
+2026-05-18 01:51:05,070 INFO: [VAE_L..][epoch: 94, iter:  23,600, lr:(4.611e-04,)] [eta: 1 day, 1:11:11, time (data): 0.596 (0.001)] l_g_pix: 1.2697e-01 l_g_percep: 1.1077e-01 l_g_kl: 9.4952e-03 l_freq: 1.5167e-01 
+2026-05-18 01:52:04,921 INFO: [VAE_L..][epoch: 94, iter:  23,700, lr:(4.607e-04,)] [eta: 1 day, 1:07:25, time (data): 0.597 (0.001)] l_g_pix: 8.0194e-02 l_g_percep: 7.0293e-02 l_g_kl: 9.3627e-03 l_freq: 1.0019e-01 
+2026-05-18 01:53:32,501 INFO: [VAE_L..][epoch: 95, iter:  23,800, lr:(4.604e-04,)] [eta: 1 day, 1:05:35, time (data): 0.931 (0.293)] l_g_pix: 1.3720e-01 l_g_percep: 1.2226e-01 l_g_kl: 9.3037e-03 l_freq: 2.1914e-01 
+2026-05-18 01:54:32,596 INFO: [VAE_L..][epoch: 95, iter:  23,900, lr:(4.600e-04,)] [eta: 1 day, 1:01:52, time (data): 0.750 (0.132)] l_g_pix: 1.1776e-01 l_g_percep: 1.0254e-01 l_g_kl: 9.9423e-03 l_freq: 1.3639e-01 
+2026-05-18 01:55:32,961 INFO: [VAE_L..][epoch: 95, iter:  24,000, lr:(4.597e-04,)] [eta: 1 day, 0:58:12, time (data): 0.604 (0.001)] l_g_pix: 1.0125e-01 l_g_percep: 8.7046e-02 l_g_kl: 9.4598e-03 l_freq: 1.4509e-01 
+2026-05-18 01:55:32,961 INFO: Only support single GPU validation.
+2026-05-18 02:07:16,912 INFO: Validation General_Image_Valid
+	 # psnr: 32.6708	Best: -inf @ -1 iter
+	 # ssim: 0.9245	Best: 0.9251 @ 18000 iter
+
+2026-05-18 02:08:55,156 INFO: [VAE_L..][epoch: 96, iter:  24,100, lr:(4.593e-04,)] [eta: 1 day, 1:44:46, time (data): 0.813 (0.132)] l_g_pix: 1.0451e-01 l_g_percep: 9.1961e-02 l_g_kl: 9.4205e-03 l_freq: 1.4190e-01 
+2026-05-18 02:09:55,091 INFO: [VAE_L..][epoch: 96, iter:  24,200, lr:(4.590e-04,)] [eta: 1 day, 1:40:51, time (data): 0.598 (0.001)] l_g_pix: 8.5408e-02 l_g_percep: 7.5409e-02 l_g_kl: 9.4055e-03 l_freq: 1.0635e-01 
+2026-05-18 02:11:22,885 INFO: [VAE_L..][epoch: 97, iter:  24,300, lr:(4.586e-04,)] [eta: 1 day, 1:38:49, time (data): 0.753 (0.137)] l_g_pix: 8.1832e-02 l_g_percep: 7.2178e-02 l_g_kl: 8.8969e-03 l_freq: 1.0353e-01 
+2026-05-18 02:12:23,456 INFO: [VAE_L..][epoch: 97, iter:  24,400, lr:(4.582e-04,)] [eta: 1 day, 1:34:59, time (data): 0.601 (0.001)] l_g_pix: 1.3245e-01 l_g_percep: 1.1437e-01 l_g_kl: 1.0778e-02 l_freq: 2.1640e-01 
+2026-05-18 02:13:23,937 INFO: [VAE_L..][epoch: 97, iter:  24,500, lr:(4.579e-04,)] [eta: 1 day, 1:31:10, time (data): 0.603 (0.001)] l_g_pix: 1.0047e-01 l_g_percep: 8.7608e-02 l_g_kl: 8.9390e-03 l_freq: 1.1866e-01 
+2026-05-18 02:14:50,843 INFO: [VAE_L..][epoch: 98, iter:  24,600, lr:(4.575e-04,)] [eta: 1 day, 1:29:06, time (data): 0.601 (0.001)] l_g_pix: 9.1628e-02 l_g_percep: 7.9930e-02 l_g_kl: 9.0652e-03 l_freq: 1.1973e-01 
+2026-05-18 02:15:50,625 INFO: [VAE_L..][epoch: 98, iter:  24,700, lr:(4.571e-04,)] [eta: 1 day, 1:25:17, time (data): 0.599 (0.001)] l_g_pix: 9.1404e-02 l_g_percep: 8.2141e-02 l_g_kl: 9.1799e-03 l_freq: 1.0389e-01 
+2026-05-18 02:17:18,135 INFO: [VAE_L..][epoch: 99, iter:  24,800, lr:(4.568e-04,)] [eta: 1 day, 1:23:17, time (data): 0.956 (0.314)] l_g_pix: 9.0647e-02 l_g_percep: 8.0378e-02 l_g_kl: 9.5503e-03 l_freq: 1.4407e-01 
+2026-05-18 02:18:18,724 INFO: [VAE_L..][epoch: 99, iter:  24,900, lr:(4.564e-04,)] [eta: 1 day, 1:19:33, time (data): 0.758 (0.137)] l_g_pix: 7.5460e-02 l_g_percep: 6.6314e-02 l_g_kl: 9.5357e-03 l_freq: 8.8389e-02 
+2026-05-18 02:19:19,519 INFO: [VAE_L..][epoch: 99, iter:  25,000, lr:(4.560e-04,)] [eta: 1 day, 1:15:50, time (data): 0.608 (0.001)] l_g_pix: 8.0638e-02 l_g_percep: 7.1444e-02 l_g_kl: 8.8538e-03 l_freq: 9.3171e-02 
+2026-05-18 02:19:19,519 INFO: Saving models and training states.
+2026-05-18 02:20:48,209 INFO: [VAE_L..][epoch:100, iter:  25,100, lr:(4.557e-04,)] [eta: 1 day, 1:13:57, time (data): 0.765 (0.139)] l_g_pix: 1.1802e-01 l_g_percep: 1.0512e-01 l_g_kl: 9.4706e-03 l_freq: 1.4133e-01 
+2026-05-18 02:21:49,230 INFO: [VAE_L..][epoch:100, iter:  25,200, lr:(4.553e-04,)] [eta: 1 day, 1:10:17, time (data): 0.601 (0.001)] l_g_pix: 8.2400e-02 l_g_percep: 7.2665e-02 l_g_kl: 8.9832e-03 l_freq: 9.7677e-02 
+2026-05-18 02:23:16,379 INFO: [VAE_L..][epoch:101, iter:  25,300, lr:(4.549e-04,)] [eta: 1 day, 1:08:19, time (data): 0.756 (0.140)] l_g_pix: 1.2203e-01 l_g_percep: 1.0262e-01 l_g_kl: 9.9956e-03 l_freq: 2.3932e-01 
+2026-05-18 02:24:16,184 INFO: [VAE_L..][epoch:101, iter:  25,400, lr:(4.546e-04,)] [eta: 1 day, 1:04:37, time (data): 0.594 (0.001)] l_g_pix: 1.2553e-01 l_g_percep: 1.0988e-01 l_g_kl: 1.0173e-02 l_freq: 2.1657e-01 
+2026-05-18 02:25:17,135 INFO: [VAE_L..][epoch:101, iter:  25,500, lr:(4.542e-04,)] [eta: 1 day, 1:01:01, time (data): 0.603 (0.001)] l_g_pix: 8.5274e-02 l_g_percep: 7.4866e-02 l_g_kl: 8.9528e-03 l_freq: 8.6133e-02 
+2026-05-18 02:26:44,040 INFO: [VAE_L..][epoch:102, iter:  25,600, lr:(4.538e-04,)] [eta: 1 day, 0:59:03, time (data): 0.602 (0.001)] l_g_pix: 8.6186e-02 l_g_percep: 7.2226e-02 l_g_kl: 1.0111e-02 l_freq: 1.3828e-01 
+2026-05-18 02:27:43,760 INFO: [VAE_L..][epoch:102, iter:  25,700, lr:(4.534e-04,)] [eta: 1 day, 0:55:24, time (data): 0.599 (0.001)] l_g_pix: 9.0799e-02 l_g_percep: 8.2238e-02 l_g_kl: 9.7410e-03 l_freq: 9.7717e-02 
+2026-05-18 02:29:11,678 INFO: [VAE_L..][epoch:103, iter:  25,800, lr:(4.530e-04,)] [eta: 1 day, 0:53:31, time (data): 0.986 (0.339)] l_g_pix: 1.0983e-01 l_g_percep: 9.1547e-02 l_g_kl: 9.9312e-03 l_freq: 1.2364e-01 
+2026-05-18 02:30:12,194 INFO: [VAE_L..][epoch:103, iter:  25,900, lr:(4.527e-04,)] [eta: 1 day, 0:49:57, time (data): 0.765 (0.142)] l_g_pix: 8.3586e-02 l_g_percep: 7.3528e-02 l_g_kl: 9.9658e-03 l_freq: 1.1839e-01 
+2026-05-18 02:31:12,968 INFO: [VAE_L..][epoch:103, iter:  26,000, lr:(4.523e-04,)] [eta: 1 day, 0:46:25, time (data): 0.609 (0.001)] l_g_pix: 8.5811e-02 l_g_percep: 7.4337e-02 l_g_kl: 1.0933e-02 l_freq: 1.2467e-01 
+2026-05-18 02:32:40,223 INFO: [VAE_L..][epoch:104, iter:  26,100, lr:(4.519e-04,)] [eta: 1 day, 0:44:31, time (data): 0.763 (0.143)] l_g_pix: 9.1836e-02 l_g_percep: 8.0470e-02 l_g_kl: 9.4606e-03 l_freq: 1.5421e-01 
+2026-05-18 02:33:40,310 INFO: [VAE_L..][epoch:104, iter:  26,200, lr:(4.515e-04,)] [eta: 1 day, 0:40:58, time (data): 0.601 (0.001)] l_g_pix: 7.9703e-02 l_g_percep: 6.9691e-02 l_g_kl: 9.9233e-03 l_freq: 8.3099e-02 
+2026-05-18 02:35:08,341 INFO: [VAE_L..][epoch:105, iter:  26,300, lr:(4.511e-04,)] [eta: 1 day, 0:39:08, time (data): 0.765 (0.139)] l_g_pix: 1.0754e-01 l_g_percep: 9.3460e-02 l_g_kl: 9.7775e-03 l_freq: 1.2953e-01 
+2026-05-18 02:36:08,394 INFO: [VAE_L..][epoch:105, iter:  26,400, lr:(4.507e-04,)] [eta: 1 day, 0:35:37, time (data): 0.597 (0.001)] l_g_pix: 8.5331e-02 l_g_percep: 7.5354e-02 l_g_kl: 9.9898e-03 l_freq: 1.0155e-01 
+2026-05-18 02:37:09,112 INFO: [VAE_L..][epoch:105, iter:  26,500, lr:(4.503e-04,)] [eta: 1 day, 0:32:10, time (data): 0.603 (0.001)] l_g_pix: 9.8338e-02 l_g_percep: 8.7331e-02 l_g_kl: 1.0498e-02 l_freq: 1.6247e-01 
+2026-05-18 02:38:36,825 INFO: [VAE_L..][epoch:106, iter:  26,600, lr:(4.499e-04,)] [eta: 1 day, 0:30:20, time (data): 0.606 (0.001)] l_g_pix: 8.6565e-02 l_g_percep: 7.5117e-02 l_g_kl: 1.0878e-02 l_freq: 1.4316e-01 
+2026-05-18 02:39:36,292 INFO: [VAE_L..][epoch:106, iter:  26,700, lr:(4.495e-04,)] [eta: 1 day, 0:26:50, time (data): 0.599 (0.001)] l_g_pix: 1.0161e-01 l_g_percep: 8.9738e-02 l_g_kl: 9.8925e-03 l_freq: 1.0303e-01 
+2026-05-18 02:41:03,903 INFO: [VAE_L..][epoch:107, iter:  26,800, lr:(4.491e-04,)] [eta: 1 day, 0:25:01, time (data): 1.014 (0.363)] l_g_pix: 8.7047e-02 l_g_percep: 7.3620e-02 l_g_kl: 1.1122e-02 l_freq: 1.4333e-01 
+2026-05-18 02:42:04,453 INFO: [VAE_L..][epoch:107, iter:  26,900, lr:(4.488e-04,)] [eta: 1 day, 0:21:36, time (data): 0.769 (0.146)] l_g_pix: 9.2549e-02 l_g_percep: 8.1311e-02 l_g_kl: 1.0199e-02 l_freq: 1.1828e-01 
+2026-05-18 02:43:04,870 INFO: [VAE_L..][epoch:107, iter:  27,000, lr:(4.484e-04,)] [eta: 1 day, 0:18:12, time (data): 0.606 (0.001)] l_g_pix: 1.0819e-01 l_g_percep: 9.2597e-02 l_g_kl: 1.0815e-02 l_freq: 1.5624e-01 
+2026-05-18 02:43:04,870 INFO: Only support single GPU validation.
+2026-05-18 02:54:47,863 INFO: Validation General_Image_Valid
+	 # psnr: 34.2134	Best: -inf @ -1 iter
+	 # ssim: 0.9304	Best: 0.9304 @ 27000 iter
+
+2026-05-18 02:56:26,820 INFO: [VAE_L..][epoch:108, iter:  27,100, lr:(4.480e-04,)] [eta: 1 day, 0:58:05, time (data): 0.837 (0.144)] l_g_pix: 9.6912e-02 l_g_percep: 8.3093e-02 l_g_kl: 1.0844e-02 l_freq: 1.6543e-01 
+2026-05-18 02:57:26,523 INFO: [VAE_L..][epoch:108, iter:  27,200, lr:(4.476e-04,)] [eta: 1 day, 0:54:29, time (data): 0.598 (0.001)] l_g_pix: 7.3650e-02 l_g_percep: 6.0954e-02 l_g_kl: 1.0552e-02 l_freq: 9.8211e-02 
+2026-05-18 02:58:54,638 INFO: [VAE_L..][epoch:109, iter:  27,300, lr:(4.472e-04,)] [eta: 1 day, 0:52:32, time (data): 0.770 (0.147)] l_g_pix: 8.7152e-02 l_g_percep: 7.7381e-02 l_g_kl: 1.0287e-02 l_freq: 1.0568e-01 
+2026-05-18 02:59:54,675 INFO: [VAE_L..][epoch:109, iter:  27,400, lr:(4.467e-04,)] [eta: 1 day, 0:48:58, time (data): 0.591 (0.001)] l_g_pix: 6.5554e-02 l_g_percep: 5.8790e-02 l_g_kl: 1.0049e-02 l_freq: 6.2660e-02 
+2026-05-18 03:00:54,894 INFO: [VAE_L..][epoch:109, iter:  27,500, lr:(4.463e-04,)] [eta: 1 day, 0:45:26, time (data): 0.598 (0.001)] l_g_pix: 9.4195e-02 l_g_percep: 8.1607e-02 l_g_kl: 1.0762e-02 l_freq: 1.8565e-01 
+2026-05-18 03:02:21,066 INFO: [VAE_L..][epoch:110, iter:  27,600, lr:(4.459e-04,)] [eta: 1 day, 0:43:24, time (data): 0.592 (0.001)] l_g_pix: 9.1306e-02 l_g_percep: 8.1156e-02 l_g_kl: 1.0683e-02 l_freq: 1.2491e-01 
+2026-05-18 03:03:20,437 INFO: [VAE_L..][epoch:110, iter:  27,700, lr:(4.455e-04,)] [eta: 1 day, 0:39:51, time (data): 0.593 (0.001)] l_g_pix: 6.1104e-02 l_g_percep: 5.3551e-02 l_g_kl: 1.0245e-02 l_freq: 6.4169e-02 
+2026-05-18 03:04:47,539 INFO: [VAE_L..][epoch:111, iter:  27,800, lr:(4.451e-04,)] [eta: 1 day, 0:37:53, time (data): 1.041 (0.393)] l_g_pix: 1.3261e-01 l_g_percep: 1.0909e-01 l_g_kl: 1.2318e-02 l_freq: 2.6677e-01 
+2026-05-18 03:05:47,273 INFO: [VAE_L..][epoch:111, iter:  27,900, lr:(4.447e-04,)] [eta: 1 day, 0:34:22, time (data): 0.767 (0.151)] l_g_pix: 1.0826e-01 l_g_percep: 9.1851e-02 l_g_kl: 1.1769e-02 l_freq: 2.0087e-01 
+2026-05-18 03:06:47,715 INFO: [VAE_L..][epoch:111, iter:  28,000, lr:(4.443e-04,)] [eta: 1 day, 0:30:56, time (data): 0.604 (0.001)] l_g_pix: 8.8702e-02 l_g_percep: 7.7002e-02 l_g_kl: 1.1231e-02 l_freq: 1.1168e-01 
+2026-05-18 03:08:14,407 INFO: [VAE_L..][epoch:112, iter:  28,100, lr:(4.439e-04,)] [eta: 1 day, 0:28:58, time (data): 0.767 (0.156)] l_g_pix: 9.3875e-02 l_g_percep: 8.0604e-02 l_g_kl: 1.0612e-02 l_freq: 1.2050e-01 
+2026-05-18 03:09:14,734 INFO: [VAE_L..][epoch:112, iter:  28,200, lr:(4.435e-04,)] [eta: 1 day, 0:25:32, time (data): 0.605 (0.001)] l_g_pix: 8.5305e-02 l_g_percep: 7.3985e-02 l_g_kl: 1.0682e-02 l_freq: 1.2374e-01 
+2026-05-18 03:10:42,392 INFO: [VAE_L..][epoch:113, iter:  28,300, lr:(4.431e-04,)] [eta: 1 day, 0:23:38, time (data): 0.775 (0.153)] l_g_pix: 8.7996e-02 l_g_percep: 7.3519e-02 l_g_kl: 1.1725e-02 l_freq: 1.4467e-01 
+2026-05-18 03:11:42,663 INFO: [VAE_L..][epoch:113, iter:  28,400, lr:(4.426e-04,)] [eta: 1 day, 0:20:14, time (data): 0.598 (0.001)] l_g_pix: 1.0533e-01 l_g_percep: 9.4199e-02 l_g_kl: 1.0843e-02 l_freq: 1.2546e-01 
+2026-05-18 03:12:43,372 INFO: [VAE_L..][epoch:113, iter:  28,500, lr:(4.422e-04,)] [eta: 1 day, 0:16:53, time (data): 0.604 (0.001)] l_g_pix: 9.3009e-02 l_g_percep: 7.9892e-02 l_g_kl: 1.1250e-02 l_freq: 1.4443e-01 
+2026-05-18 03:14:10,604 INFO: [VAE_L..][epoch:114, iter:  28,600, lr:(4.418e-04,)] [eta: 1 day, 0:14:59, time (data): 0.600 (0.001)] l_g_pix: 1.0232e-01 l_g_percep: 8.6559e-02 l_g_kl: 1.1291e-02 l_freq: 1.5980e-01 
+2026-05-18 03:15:10,411 INFO: [VAE_L..][epoch:114, iter:  28,700, lr:(4.414e-04,)] [eta: 1 day, 0:11:36, time (data): 0.599 (0.001)] l_g_pix: 9.0521e-02 l_g_percep: 7.9164e-02 l_g_kl: 1.0128e-02 l_freq: 1.0646e-01 
+2026-05-18 03:16:38,185 INFO: [VAE_L..][epoch:115, iter:  28,800, lr:(4.410e-04,)] [eta: 1 day, 0:09:45, time (data): 1.088 (0.425)] l_g_pix: 1.0175e-01 l_g_percep: 8.7852e-02 l_g_kl: 1.1866e-02 l_freq: 1.6902e-01 
+2026-05-18 03:17:37,795 INFO: [VAE_L..][epoch:115, iter:  28,900, lr:(4.405e-04,)] [eta: 1 day, 0:06:23, time (data): 0.775 (0.155)] l_g_pix: 9.9755e-02 l_g_percep: 8.2396e-02 l_g_kl: 1.1223e-02 l_freq: 1.9816e-01 
+2026-05-18 03:18:38,312 INFO: [VAE_L..][epoch:115, iter:  29,000, lr:(4.401e-04,)] [eta: 1 day, 0:03:05, time (data): 0.605 (0.001)] l_g_pix: 1.2116e-01 l_g_percep: 1.0208e-01 l_g_kl: 1.2079e-02 l_freq: 2.1875e-01 
+2026-05-18 03:20:05,292 INFO: [VAE_L..][epoch:116, iter:  29,100, lr:(4.397e-04,)] [eta: 1 day, 0:01:12, time (data): 0.775 (0.151)] l_g_pix: 8.8654e-02 l_g_percep: 7.4475e-02 l_g_kl: 1.1267e-02 l_freq: 1.7224e-01 
+2026-05-18 03:21:04,799 INFO: [VAE_L..][epoch:116, iter:  29,200, lr:(4.393e-04,)] [eta: 23:57:52, time (data): 0.595 (0.001)] l_g_pix: 9.6773e-02 l_g_percep: 8.1791e-02 l_g_kl: 1.1104e-02 l_freq: 1.3288e-01 
+2026-05-18 03:22:31,622 INFO: [VAE_L..][epoch:117, iter:  29,300, lr:(4.388e-04,)] [eta: 23:56:00, time (data): 0.771 (0.156)] l_g_pix: 6.5169e-02 l_g_percep: 5.6892e-02 l_g_kl: 1.0955e-02 l_freq: 9.0825e-02 
+2026-05-18 03:23:31,375 INFO: [VAE_L..][epoch:117, iter:  29,400, lr:(4.384e-04,)] [eta: 23:52:42, time (data): 0.593 (0.001)] l_g_pix: 1.2400e-01 l_g_percep: 1.0578e-01 l_g_kl: 1.1460e-02 l_freq: 2.5323e-01 
+2026-05-18 03:24:32,171 INFO: [VAE_L..][epoch:117, iter:  29,500, lr:(4.380e-04,)] [eta: 23:49:29, time (data): 0.603 (0.001)] l_g_pix: 1.0788e-01 l_g_percep: 9.4081e-02 l_g_kl: 1.1565e-02 l_freq: 1.7639e-01 
+2026-05-18 03:25:59,541 INFO: [VAE_L..][epoch:118, iter:  29,600, lr:(4.375e-04,)] [eta: 23:47:40, time (data): 0.609 (0.001)] l_g_pix: 8.4555e-02 l_g_percep: 7.1826e-02 l_g_kl: 1.1485e-02 l_freq: 1.4969e-01 
+2026-05-18 03:26:58,922 INFO: [VAE_L..][epoch:118, iter:  29,700, lr:(4.371e-04,)] [eta: 23:44:23, time (data): 0.599 (0.001)] l_g_pix: 1.0823e-01 l_g_percep: 9.0675e-02 l_g_kl: 1.0247e-02 l_freq: 1.3481e-01 
+2026-05-18 03:28:26,290 INFO: [VAE_L..][epoch:119, iter:  29,800, lr:(4.367e-04,)] [eta: 23:42:35, time (data): 1.126 (0.464)] l_g_pix: 8.8416e-02 l_g_percep: 7.4981e-02 l_g_kl: 1.1036e-02 l_freq: 1.2332e-01 
+2026-05-18 03:29:26,102 INFO: [VAE_L..][epoch:119, iter:  29,900, lr:(4.362e-04,)] [eta: 23:39:21, time (data): 0.779 (0.159)] l_g_pix: 1.0171e-01 l_g_percep: 8.7672e-02 l_g_kl: 1.1098e-02 l_freq: 1.4669e-01 
+2026-05-18 03:30:26,882 INFO: [VAE_L..][epoch:119, iter:  30,000, lr:(4.358e-04,)] [eta: 23:36:11, time (data): 0.612 (0.001)] l_g_pix: 8.2914e-02 l_g_percep: 7.1337e-02 l_g_kl: 1.0664e-02 l_freq: 1.1333e-01 
+2026-05-18 03:30:26,883 INFO: Saving models and training states.
+2026-05-18 03:30:27,295 INFO: Only support single GPU validation.
+2026-05-18 03:42:09,243 INFO: Validation General_Image_Valid
+	 # psnr: 34.4176	Best: -inf @ -1 iter
+	 # ssim: 0.9344	Best: 0.9344 @ 30000 iter
+
+2026-05-18 03:43:49,004 INFO: [VAE_L..][epoch:120, iter:  30,100, lr:(4.354e-04,)] [eta: 1 day, 0:10:46, time (data): 0.867 (0.156)] l_g_pix: 7.8673e-02 l_g_percep: 7.0632e-02 l_g_kl: 1.0544e-02 l_freq: 9.1977e-02 
+2026-05-18 03:44:49,563 INFO: [VAE_L..][epoch:120, iter:  30,200, lr:(4.349e-04,)] [eta: 1 day, 0:07:27, time (data): 0.604 (0.001)] l_g_pix: 7.2228e-02 l_g_percep: 5.6734e-02 l_g_kl: 1.1014e-02 l_freq: 1.0327e-01 
+2026-05-18 03:46:16,696 INFO: [VAE_L..][epoch:121, iter:  30,300, lr:(4.345e-04,)] [eta: 1 day, 0:05:30, time (data): 0.782 (0.160)] l_g_pix: 1.0114e-01 l_g_percep: 8.7814e-02 l_g_kl: 1.1224e-02 l_freq: 1.6943e-01 
+2026-05-18 03:47:16,509 INFO: [VAE_L..][epoch:121, iter:  30,400, lr:(4.340e-04,)] [eta: 1 day, 0:02:11, time (data): 0.591 (0.001)] l_g_pix: 1.0634e-01 l_g_percep: 9.5759e-02 l_g_kl: 1.0263e-02 l_freq: 1.2010e-01 
+2026-05-18 03:48:17,299 INFO: [VAE_L..][epoch:121, iter:  30,500, lr:(4.336e-04,)] [eta: 23:58:55, time (data): 0.602 (0.001)] l_g_pix: 9.2013e-02 l_g_percep: 7.8463e-02 l_g_kl: 1.1108e-02 l_freq: 1.3081e-01 
+2026-05-18 03:49:44,052 INFO: [VAE_L..][epoch:122, iter:  30,600, lr:(4.332e-04,)] [eta: 23:56:58, time (data): 0.597 (0.001)] l_g_pix: 9.2735e-02 l_g_percep: 8.2367e-02 l_g_kl: 1.0831e-02 l_freq: 1.3982e-01 
+2026-05-18 03:50:43,535 INFO: [VAE_L..][epoch:122, iter:  30,700, lr:(4.327e-04,)] [eta: 23:53:40, time (data): 0.595 (0.001)] l_g_pix: 7.7143e-02 l_g_percep: 6.6820e-02 l_g_kl: 1.1074e-02 l_freq: 1.2225e-01 
+2026-05-18 03:52:10,784 INFO: [VAE_L..][epoch:123, iter:  30,800, lr:(4.323e-04,)] [eta: 23:51:45, time (data): 0.613 (0.001)] l_g_pix: 1.3442e-01 l_g_percep: 1.0550e-01 l_g_kl: 1.1554e-02 l_freq: 2.7183e-01 
+2026-05-18 03:53:10,636 INFO: [VAE_L..][epoch:123, iter:  30,900, lr:(4.318e-04,)] [eta: 23:48:30, time (data): 0.603 (0.001)] l_g_pix: 8.0052e-02 l_g_percep: 6.8293e-02 l_g_kl: 1.0669e-02 l_freq: 1.3705e-01 
+2026-05-18 03:54:10,663 INFO: [VAE_L..][epoch:123, iter:  31,000, lr:(4.314e-04,)] [eta: 23:45:16, time (data): 0.604 (0.001)] l_g_pix: 9.2154e-02 l_g_percep: 7.8431e-02 l_g_kl: 1.1225e-02 l_freq: 1.2417e-01 
+2026-05-18 03:55:37,439 INFO: [VAE_L..][epoch:124, iter:  31,100, lr:(4.309e-04,)] [eta: 23:43:21, time (data): 0.784 (0.162)] l_g_pix: 9.4441e-02 l_g_percep: 8.4035e-02 l_g_kl: 1.0672e-02 l_freq: 1.3547e-01 
+2026-05-18 03:56:36,995 INFO: [VAE_L..][epoch:124, iter:  31,200, lr:(4.305e-04,)] [eta: 23:40:07, time (data): 0.593 (0.001)] l_g_pix: 8.3093e-02 l_g_percep: 7.1318e-02 l_g_kl: 1.0439e-02 l_freq: 1.4905e-01 
+2026-05-18 03:58:04,316 INFO: [VAE_L..][epoch:125, iter:  31,300, lr:(4.300e-04,)] [eta: 23:38:14, time (data): 0.786 (0.165)] l_g_pix: 9.6392e-02 l_g_percep: 8.3818e-02 l_g_kl: 1.1331e-02 l_freq: 1.6390e-01 
+2026-05-18 03:59:04,373 INFO: [VAE_L..][epoch:125, iter:  31,400, lr:(4.296e-04,)] [eta: 23:35:03, time (data): 0.586 (0.001)] l_g_pix: 6.6934e-02 l_g_percep: 6.1228e-02 l_g_kl: 9.8840e-03 l_freq: 6.7362e-02 
+2026-05-18 04:00:05,527 INFO: [VAE_L..][epoch:125, iter:  31,500, lr:(4.291e-04,)] [eta: 23:31:56, time (data): 0.604 (0.001)] l_g_pix: 1.1354e-01 l_g_percep: 9.8192e-02 l_g_kl: 1.1387e-02 l_freq: 2.1914e-01 
+2026-05-18 04:01:32,358 INFO: [VAE_L..][epoch:126, iter:  31,600, lr:(4.286e-04,)] [eta: 23:30:03, time (data): 0.598 (0.001)] l_g_pix: 8.9736e-02 l_g_percep: 7.7482e-02 l_g_kl: 1.1048e-02 l_freq: 1.4289e-01 
+2026-05-18 04:02:32,240 INFO: [VAE_L..][epoch:126, iter:  31,700, lr:(4.282e-04,)] [eta: 23:26:53, time (data): 0.599 (0.001)] l_g_pix: 1.0066e-01 l_g_percep: 7.9864e-02 l_g_kl: 1.0510e-02 l_freq: 1.3409e-01 
+2026-05-18 04:04:00,136 INFO: [VAE_L..][epoch:127, iter:  31,800, lr:(4.277e-04,)] [eta: 23:25:04, time (data): 0.601 (0.001)] l_g_pix: 6.1952e-02 l_g_percep: 5.3514e-02 l_g_kl: 1.0397e-02 l_freq: 7.6482e-02 
+2026-05-18 04:05:00,323 INFO: [VAE_L..][epoch:127, iter:  31,900, lr:(4.273e-04,)] [eta: 23:21:56, time (data): 0.602 (0.001)] l_g_pix: 8.8076e-02 l_g_percep: 7.3856e-02 l_g_kl: 1.0264e-02 l_freq: 9.2276e-02 
+2026-05-18 04:06:00,790 INFO: [VAE_L..][epoch:127, iter:  32,000, lr:(4.268e-04,)] [eta: 23:18:50, time (data): 0.612 (0.001)] l_g_pix: 1.1176e-01 l_g_percep: 9.7117e-02 l_g_kl: 1.1009e-02 l_freq: 1.9113e-01 
+2026-05-18 04:07:28,753 INFO: [VAE_L..][epoch:128, iter:  32,100, lr:(4.263e-04,)] [eta: 23:17:02, time (data): 0.802 (0.175)] l_g_pix: 7.2401e-02 l_g_percep: 6.1185e-02 l_g_kl: 1.0901e-02 l_freq: 1.2021e-01 
+2026-05-18 04:08:28,560 INFO: [VAE_L..][epoch:128, iter:  32,200, lr:(4.259e-04,)] [eta: 23:13:56, time (data): 0.598 (0.001)] l_g_pix: 7.3110e-02 l_g_percep: 6.3464e-02 l_g_kl: 1.1051e-02 l_freq: 1.0800e-01 
+2026-05-18 04:09:56,701 INFO: [VAE_L..][epoch:129, iter:  32,300, lr:(4.254e-04,)] [eta: 23:12:09, time (data): 0.800 (0.174)] l_g_pix: 7.0502e-02 l_g_percep: 6.0101e-02 l_g_kl: 1.0652e-02 l_freq: 1.2456e-01 
+2026-05-18 04:10:56,717 INFO: [VAE_L..][epoch:129, iter:  32,400, lr:(4.249e-04,)] [eta: 23:09:04, time (data): 0.593 (0.001)] l_g_pix: 1.0757e-01 l_g_percep: 9.4785e-02 l_g_kl: 1.1196e-02 l_freq: 1.5521e-01 
+2026-05-18 04:11:57,636 INFO: [VAE_L..][epoch:129, iter:  32,500, lr:(4.245e-04,)] [eta: 23:06:03, time (data): 0.605 (0.001)] l_g_pix: 9.0534e-02 l_g_percep: 7.5167e-02 l_g_kl: 1.1435e-02 l_freq: 2.0511e-01 
+2026-05-18 04:13:25,183 INFO: [VAE_L..][epoch:130, iter:  32,600, lr:(4.240e-04,)] [eta: 23:04:15, time (data): 0.601 (0.001)] l_g_pix: 9.0364e-02 l_g_percep: 7.7170e-02 l_g_kl: 1.0826e-02 l_freq: 1.4827e-01 
+2026-05-18 04:14:24,942 INFO: [VAE_L..][epoch:130, iter:  32,700, lr:(4.235e-04,)] [eta: 23:01:12, time (data): 0.599 (0.001)] l_g_pix: 1.0807e-01 l_g_percep: 9.3900e-02 l_g_kl: 1.0423e-02 l_freq: 1.7102e-01 
+2026-05-18 04:15:52,827 INFO: [VAE_L..][epoch:131, iter:  32,800, lr:(4.231e-04,)] [eta: 22:59:25, time (data): 0.603 (0.001)] l_g_pix: 1.3173e-01 l_g_percep: 1.0778e-01 l_g_kl: 1.1851e-02 l_freq: 2.6207e-01 
+2026-05-18 04:16:54,400 INFO: [VAE_L..][epoch:131, iter:  32,900, lr:(4.226e-04,)] [eta: 22:56:28, time (data): 0.612 (0.001)] l_g_pix: 6.9290e-02 l_g_percep: 5.7069e-02 l_g_kl: 1.1467e-02 l_freq: 9.6549e-02 
+2026-05-18 04:17:56,426 INFO: [VAE_L..][epoch:131, iter:  33,000, lr:(4.221e-04,)] [eta: 22:53:33, time (data): 0.628 (0.001)] l_g_pix: 6.9602e-02 l_g_percep: 6.2135e-02 l_g_kl: 1.0649e-02 l_freq: 9.3600e-02 
+2026-05-18 04:17:56,427 INFO: Only support single GPU validation.
+2026-05-18 04:29:43,825 INFO: Validation General_Image_Valid
+	 # psnr: 36.3088	Best: -inf @ -1 iter
+	 # ssim: 0.9363	Best: 0.9363 @ 33000 iter
+
+2026-05-18 04:31:26,032 INFO: [VAE_L..][epoch:132, iter:  33,100, lr:(4.216e-04,)] [eta: 23:24:06, time (data): 0.918 (0.180)] l_g_pix: 7.9143e-02 l_g_percep: 6.8437e-02 l_g_kl: 1.1022e-02 l_freq: 1.1809e-01 
+2026-05-18 04:32:26,999 INFO: [VAE_L..][epoch:132, iter:  33,200, lr:(4.212e-04,)] [eta: 23:21:01, time (data): 0.611 (0.001)] l_g_pix: 1.1968e-01 l_g_percep: 9.3795e-02 l_g_kl: 1.1844e-02 l_freq: 2.4812e-01 
+2026-05-18 04:33:56,506 INFO: [VAE_L..][epoch:133, iter:  33,300, lr:(4.207e-04,)] [eta: 23:19:12, time (data): 0.821 (0.182)] l_g_pix: 8.4895e-02 l_g_percep: 6.8294e-02 l_g_kl: 1.0940e-02 l_freq: 1.3856e-01 
+2026-05-18 04:34:57,752 INFO: [VAE_L..][epoch:133, iter:  33,400, lr:(4.202e-04,)] [eta: 23:16:09, time (data): 0.604 (0.001)] l_g_pix: 9.4306e-02 l_g_percep: 8.0426e-02 l_g_kl: 1.1304e-02 l_freq: 1.4822e-01 
+2026-05-18 04:35:59,547 INFO: [VAE_L..][epoch:133, iter:  33,500, lr:(4.197e-04,)] [eta: 23:13:08, time (data): 0.614 (0.001)] l_g_pix: 6.9573e-02 l_g_percep: 6.1509e-02 l_g_kl: 1.0603e-02 l_freq: 9.1462e-02 
+2026-05-18 04:37:28,428 INFO: [VAE_L..][epoch:134, iter:  33,600, lr:(4.192e-04,)] [eta: 23:11:19, time (data): 0.612 (0.001)] l_g_pix: 6.4056e-02 l_g_percep: 5.5977e-02 l_g_kl: 1.0308e-02 l_freq: 1.0014e-01 
+2026-05-18 04:38:29,399 INFO: [VAE_L..][epoch:134, iter:  33,700, lr:(4.188e-04,)] [eta: 23:08:17, time (data): 0.610 (0.001)] l_g_pix: 7.1643e-02 l_g_percep: 6.2859e-02 l_g_kl: 1.0420e-02 l_freq: 8.0565e-02 
+2026-05-18 04:39:58,593 INFO: [VAE_L..][epoch:135, iter:  33,800, lr:(4.183e-04,)] [eta: 23:06:29, time (data): 0.611 (0.001)] l_g_pix: 9.0346e-02 l_g_percep: 7.8668e-02 l_g_kl: 1.0712e-02 l_freq: 1.4852e-01 
+2026-05-18 04:40:59,309 INFO: [VAE_L..][epoch:135, iter:  33,900, lr:(4.178e-04,)] [eta: 23:03:27, time (data): 0.608 (0.001)] l_g_pix: 9.5055e-02 l_g_percep: 8.2800e-02 l_g_kl: 1.1444e-02 l_freq: 1.4577e-01 
+2026-05-18 04:42:01,360 INFO: [VAE_L..][epoch:135, iter:  34,000, lr:(4.173e-04,)] [eta: 23:00:30, time (data): 0.632 (0.001)] l_g_pix: 9.5902e-02 l_g_percep: 8.2829e-02 l_g_kl: 1.1513e-02 l_freq: 1.6458e-01 
+2026-05-18 04:43:30,154 INFO: [VAE_L..][epoch:136, iter:  34,100, lr:(4.168e-04,)] [eta: 22:58:42, time (data): 0.827 (0.197)] l_g_pix: 8.1077e-02 l_g_percep: 7.0447e-02 l_g_kl: 1.0804e-02 l_freq: 1.1230e-01 
+2026-05-18 04:44:30,636 INFO: [VAE_L..][epoch:136, iter:  34,200, lr:(4.163e-04,)] [eta: 22:55:42, time (data): 0.602 (0.001)] l_g_pix: 8.0153e-02 l_g_percep: 6.9919e-02 l_g_kl: 1.1365e-02 l_freq: 1.1739e-01 
+2026-05-18 04:46:00,167 INFO: [VAE_L..][epoch:137, iter:  34,300, lr:(4.158e-04,)] [eta: 22:53:56, time (data): 0.828 (0.194)] l_g_pix: 7.7031e-02 l_g_percep: 6.9185e-02 l_g_kl: 1.0523e-02 l_freq: 7.6174e-02 
+2026-05-18 04:47:01,741 INFO: [VAE_L..][epoch:137, iter:  34,400, lr:(4.153e-04,)] [eta: 22:50:59, time (data): 0.605 (0.001)] l_g_pix: 8.8015e-02 l_g_percep: 7.5921e-02 l_g_kl: 1.0894e-02 l_freq: 1.3523e-01 
+2026-05-18 04:48:03,368 INFO: [VAE_L..][epoch:137, iter:  34,500, lr:(4.149e-04,)] [eta: 22:48:04, time (data): 0.614 (0.001)] l_g_pix: 8.1992e-02 l_g_percep: 7.0257e-02 l_g_kl: 1.0760e-02 l_freq: 1.0277e-01 
+2026-05-18 04:49:32,151 INFO: [VAE_L..][epoch:138, iter:  34,600, lr:(4.144e-04,)] [eta: 22:46:17, time (data): 0.609 (0.001)] l_g_pix: 1.0111e-01 l_g_percep: 8.6846e-02 l_g_kl: 1.1098e-02 l_freq: 1.3728e-01 
+2026-05-18 04:50:33,282 INFO: [VAE_L..][epoch:138, iter:  34,700, lr:(4.139e-04,)] [eta: 22:43:21, time (data): 0.611 (0.001)] l_g_pix: 6.7445e-02 l_g_percep: 5.9871e-02 l_g_kl: 1.0643e-02 l_freq: 9.1053e-02 
+2026-05-18 04:52:02,777 INFO: [VAE_L..][epoch:139, iter:  34,800, lr:(4.134e-04,)] [eta: 22:41:37, time (data): 0.616 (0.001)] l_g_pix: 8.0002e-02 l_g_percep: 6.8241e-02 l_g_kl: 1.1098e-02 l_freq: 1.3147e-01 
+2026-05-18 04:53:03,554 INFO: [VAE_L..][epoch:139, iter:  34,900, lr:(4.129e-04,)] [eta: 22:38:41, time (data): 0.610 (0.001)] l_g_pix: 6.5620e-02 l_g_percep: 5.6197e-02 l_g_kl: 1.0827e-02 l_freq: 5.9457e-02 
+2026-05-18 04:54:04,981 INFO: [VAE_L..][epoch:139, iter:  35,000, lr:(4.124e-04,)] [eta: 22:35:48, time (data): 0.628 (0.001)] l_g_pix: 8.0115e-02 l_g_percep: 7.1116e-02 l_g_kl: 1.0826e-02 l_freq: 1.1449e-01 
+2026-05-18 04:54:04,982 INFO: Saving models and training states.
+2026-05-18 04:55:34,240 INFO: [VAE_L..][epoch:140, iter:  35,100, lr:(4.119e-04,)] [eta: 22:34:04, time (data): 0.835 (0.198)] l_g_pix: 8.1636e-02 l_g_percep: 6.9835e-02 l_g_kl: 1.1109e-02 l_freq: 1.3001e-01 
+2026-05-18 04:56:34,759 INFO: [VAE_L..][epoch:140, iter:  35,200, lr:(4.114e-04,)] [eta: 22:31:09, time (data): 0.606 (0.001)] l_g_pix: 9.0011e-02 l_g_percep: 7.4371e-02 l_g_kl: 1.0765e-02 l_freq: 1.4106e-01 
+2026-05-18 04:58:03,813 INFO: [VAE_L..][epoch:141, iter:  35,300, lr:(4.109e-04,)] [eta: 22:29:25, time (data): 0.834 (0.202)] l_g_pix: 7.6685e-02 l_g_percep: 6.7081e-02 l_g_kl: 1.0674e-02 l_freq: 8.5796e-02 
+2026-05-18 04:59:05,015 INFO: [VAE_L..][epoch:141, iter:  35,400, lr:(4.104e-04,)] [eta: 22:26:33, time (data): 0.601 (0.001)] l_g_pix: 8.3498e-02 l_g_percep: 7.2167e-02 l_g_kl: 1.1218e-02 l_freq: 1.1138e-01 
+2026-05-18 05:00:06,140 INFO: [VAE_L..][epoch:141, iter:  35,500, lr:(4.099e-04,)] [eta: 22:23:41, time (data): 0.609 (0.001)] l_g_pix: 7.4824e-02 l_g_percep: 6.2176e-02 l_g_kl: 1.1100e-02 l_freq: 9.7793e-02 
+2026-05-18 05:01:34,432 INFO: [VAE_L..][epoch:142, iter:  35,600, lr:(4.094e-04,)] [eta: 22:21:56, time (data): 0.600 (0.001)] l_g_pix: 6.8625e-02 l_g_percep: 5.9945e-02 l_g_kl: 1.0727e-02 l_freq: 1.0381e-01 
+2026-05-18 05:02:35,820 INFO: [VAE_L..][epoch:142, iter:  35,700, lr:(4.089e-04,)] [eta: 22:19:06, time (data): 0.611 (0.001)] l_g_pix: 1.0046e-01 l_g_percep: 8.5760e-02 l_g_kl: 1.0768e-02 l_freq: 1.6783e-01 
+2026-05-18 05:04:05,106 INFO: [VAE_L..][epoch:143, iter:  35,800, lr:(4.084e-04,)] [eta: 22:17:23, time (data): 0.605 (0.001)] l_g_pix: 8.2152e-02 l_g_percep: 7.0294e-02 l_g_kl: 1.0662e-02 l_freq: 1.0840e-01 
+2026-05-18 05:05:06,377 INFO: [VAE_L..][epoch:143, iter:  35,900, lr:(4.079e-04,)] [eta: 22:14:34, time (data): 0.611 (0.001)] l_g_pix: 8.5310e-02 l_g_percep: 6.9195e-02 l_g_kl: 1.1087e-02 l_freq: 1.0823e-01 
+2026-05-18 05:06:07,798 INFO: [VAE_L..][epoch:143, iter:  36,000, lr:(4.074e-04,)] [eta: 22:11:46, time (data): 0.632 (0.001)] l_g_pix: 8.0835e-02 l_g_percep: 6.8700e-02 l_g_kl: 1.1674e-02 l_freq: 1.5053e-01 
+2026-05-18 05:06:07,799 INFO: Only support single GPU validation.
+2026-05-18 05:17:56,411 INFO: Validation General_Image_Valid
+	 # psnr: 36.8936	Best: -inf @ -1 iter
+	 # ssim: 0.9370	Best: 0.9370 @ 36000 iter
+
+2026-05-18 05:19:37,279 INFO: [VAE_L..][epoch:144, iter:  36,100, lr:(4.068e-04,)] [eta: 22:38:38, time (data): 0.943 (0.203)] l_g_pix: 7.7407e-02 l_g_percep: 6.7034e-02 l_g_kl: 1.1139e-02 l_freq: 1.3627e-01 
+2026-05-18 05:20:38,882 INFO: [VAE_L..][epoch:144, iter:  36,200, lr:(4.063e-04,)] [eta: 22:35:44, time (data): 0.614 (0.001)] l_g_pix: 8.7038e-02 l_g_percep: 7.8328e-02 l_g_kl: 1.0505e-02 l_freq: 1.0723e-01 
+2026-05-18 05:22:07,771 INFO: [VAE_L..][epoch:145, iter:  36,300, lr:(4.058e-04,)] [eta: 22:33:55, time (data): 0.843 (0.209)] l_g_pix: 1.1224e-01 l_g_percep: 9.5916e-02 l_g_kl: 1.1387e-02 l_freq: 2.0623e-01 
+2026-05-18 05:23:09,239 INFO: [VAE_L..][epoch:145, iter:  36,400, lr:(4.053e-04,)] [eta: 22:31:02, time (data): 0.605 (0.001)] l_g_pix: 6.1838e-02 l_g_percep: 5.6427e-02 l_g_kl: 9.7659e-03 l_freq: 6.5855e-02 
+2026-05-18 05:24:10,925 INFO: [VAE_L..][epoch:145, iter:  36,500, lr:(4.048e-04,)] [eta: 22:28:10, time (data): 0.615 (0.001)] l_g_pix: 9.0918e-02 l_g_percep: 7.8165e-02 l_g_kl: 1.1739e-02 l_freq: 1.5832e-01 
+2026-05-18 05:25:40,530 INFO: [VAE_L..][epoch:146, iter:  36,600, lr:(4.043e-04,)] [eta: 22:26:24, time (data): 0.608 (0.001)] l_g_pix: 7.5109e-02 l_g_percep: 6.7115e-02 l_g_kl: 1.0488e-02 l_freq: 8.8753e-02 
+2026-05-18 05:26:41,101 INFO: [VAE_L..][epoch:146, iter:  36,700, lr:(4.038e-04,)] [eta: 22:23:30, time (data): 0.606 (0.001)] l_g_pix: 8.8560e-02 l_g_percep: 7.8323e-02 l_g_kl: 1.1020e-02 l_freq: 1.4697e-01 
+2026-05-18 05:28:11,186 INFO: [VAE_L..][epoch:147, iter:  36,800, lr:(4.033e-04,)] [eta: 22:21:45, time (data): 0.613 (0.001)] l_g_pix: 6.6212e-02 l_g_percep: 5.7815e-02 l_g_kl: 1.0854e-02 l_freq: 1.1849e-01 
+2026-05-18 05:29:11,711 INFO: [VAE_L..][epoch:147, iter:  36,900, lr:(4.027e-04,)] [eta: 22:18:52, time (data): 0.606 (0.001)] l_g_pix: 9.2762e-02 l_g_percep: 8.2672e-02 l_g_kl: 1.0792e-02 l_freq: 1.0808e-01 
+2026-05-18 05:30:12,744 INFO: [VAE_L..][epoch:147, iter:  37,000, lr:(4.022e-04,)] [eta: 22:16:01, time (data): 0.633 (0.001)] l_g_pix: 6.7136e-02 l_g_percep: 5.8933e-02 l_g_kl: 1.0586e-02 l_freq: 9.8400e-02 
+2026-05-18 05:31:41,695 INFO: [VAE_L..][epoch:148, iter:  37,100, lr:(4.017e-04,)] [eta: 22:14:15, time (data): 0.854 (0.223)] l_g_pix: 1.1098e-01 l_g_percep: 9.4970e-02 l_g_kl: 1.0120e-02 l_freq: 1.3911e-01 
+2026-05-18 05:32:42,603 INFO: [VAE_L..][epoch:148, iter:  37,200, lr:(4.012e-04,)] [eta: 22:11:24, time (data): 0.614 (0.001)] l_g_pix: 9.2245e-02 l_g_percep: 8.0831e-02 l_g_kl: 1.0937e-02 l_freq: 1.2343e-01 
+2026-05-18 05:34:12,669 INFO: [VAE_L..][epoch:149, iter:  37,300, lr:(4.007e-04,)] [eta: 22:09:41, time (data): 0.863 (0.222)] l_g_pix: 8.0351e-02 l_g_percep: 6.9517e-02 l_g_kl: 1.1235e-02 l_freq: 1.4053e-01 
+2026-05-18 05:35:14,091 INFO: [VAE_L..][epoch:149, iter:  37,400, lr:(4.001e-04,)] [eta: 22:06:52, time (data): 0.605 (0.001)] l_g_pix: 9.7207e-02 l_g_percep: 8.2844e-02 l_g_kl: 1.1855e-02 l_freq: 1.8934e-01 
+2026-05-18 05:36:15,526 INFO: [VAE_L..][epoch:149, iter:  37,500, lr:(3.996e-04,)] [eta: 22:04:05, time (data): 0.613 (0.001)] l_g_pix: 8.6154e-02 l_g_percep: 7.5246e-02 l_g_kl: 1.0633e-02 l_freq: 1.3372e-01 
+2026-05-18 05:37:44,715 INFO: [VAE_L..][epoch:150, iter:  37,600, lr:(3.991e-04,)] [eta: 22:02:20, time (data): 0.614 (0.001)] l_g_pix: 8.5452e-02 l_g_percep: 7.1007e-02 l_g_kl: 1.0922e-02 l_freq: 1.5061e-01 
+2026-05-18 05:38:46,104 INFO: [VAE_L..][epoch:150, iter:  37,700, lr:(3.986e-04,)] [eta: 21:59:33, time (data): 0.614 (0.001)] l_g_pix: 6.7862e-02 l_g_percep: 5.8620e-02 l_g_kl: 1.0941e-02 l_freq: 9.7535e-02 
+2026-05-18 05:40:15,147 INFO: [VAE_L..][epoch:151, iter:  37,800, lr:(3.980e-04,)] [eta: 21:57:48, time (data): 0.608 (0.001)] l_g_pix: 6.6057e-02 l_g_percep: 5.9408e-02 l_g_kl: 1.0302e-02 l_freq: 7.8004e-02 
+2026-05-18 05:41:16,193 INFO: [VAE_L..][epoch:151, iter:  37,900, lr:(3.975e-04,)] [eta: 21:55:01, time (data): 0.610 (0.001)] l_g_pix: 9.9449e-02 l_g_percep: 8.3137e-02 l_g_kl: 1.2081e-02 l_freq: 2.1353e-01 
+2026-05-18 05:42:17,848 INFO: [VAE_L..][epoch:151, iter:  38,000, lr:(3.970e-04,)] [eta: 21:52:16, time (data): 0.678 (0.001)] l_g_pix: 9.0356e-02 l_g_percep: 7.3536e-02 l_g_kl: 1.1267e-02 l_freq: 9.9493e-02 
+2026-05-18 05:43:46,890 INFO: [VAE_L..][epoch:152, iter:  38,100, lr:(3.964e-04,)] [eta: 21:50:32, time (data): 0.869 (0.226)] l_g_pix: 1.0049e-01 l_g_percep: 8.7348e-02 l_g_kl: 1.1389e-02 l_freq: 1.7235e-01 
+2026-05-18 05:44:47,799 INFO: [VAE_L..][epoch:152, iter:  38,200, lr:(3.959e-04,)] [eta: 21:47:47, time (data): 0.600 (0.001)] l_g_pix: 5.9820e-02 l_g_percep: 5.1225e-02 l_g_kl: 1.0751e-02 l_freq: 7.3150e-02 
+2026-05-18 05:46:17,419 INFO: [VAE_L..][epoch:153, iter:  38,300, lr:(3.954e-04,)] [eta: 21:46:04, time (data): 0.869 (0.229)] l_g_pix: 7.5065e-02 l_g_percep: 6.6133e-02 l_g_kl: 1.1072e-02 l_freq: 1.1935e-01 
+2026-05-18 05:47:18,990 INFO: [VAE_L..][epoch:153, iter:  38,400, lr:(3.948e-04,)] [eta: 21:43:21, time (data): 0.610 (0.001)] l_g_pix: 8.2149e-02 l_g_percep: 7.3211e-02 l_g_kl: 1.0507e-02 l_freq: 1.1682e-01 
+2026-05-18 05:48:20,508 INFO: [VAE_L..][epoch:153, iter:  38,500, lr:(3.943e-04,)] [eta: 21:40:38, time (data): 0.615 (0.001)] l_g_pix: 6.6798e-02 l_g_percep: 5.7072e-02 l_g_kl: 1.1062e-02 l_freq: 8.3216e-02 
+2026-05-18 05:49:50,468 INFO: [VAE_L..][epoch:154, iter:  38,600, lr:(3.938e-04,)] [eta: 21:38:57, time (data): 0.606 (0.001)] l_g_pix: 1.0930e-01 l_g_percep: 9.4248e-02 l_g_kl: 1.1701e-02 l_freq: 2.0989e-01 
+2026-05-18 05:50:51,194 INFO: [VAE_L..][epoch:154, iter:  38,700, lr:(3.932e-04,)] [eta: 21:36:13, time (data): 0.607 (0.001)] l_g_pix: 5.9365e-02 l_g_percep: 5.3069e-02 l_g_kl: 1.0249e-02 l_freq: 6.4199e-02 
+2026-05-18 05:52:20,886 INFO: [VAE_L..][epoch:155, iter:  38,800, lr:(3.927e-04,)] [eta: 21:34:32, time (data): 0.618 (0.001)] l_g_pix: 8.7065e-02 l_g_percep: 7.6951e-02 l_g_kl: 1.0597e-02 l_freq: 1.2967e-01 
+2026-05-18 05:53:22,444 INFO: [VAE_L..][epoch:155, iter:  38,900, lr:(3.922e-04,)] [eta: 21:31:50, time (data): 0.616 (0.001)] l_g_pix: 7.5071e-02 l_g_percep: 6.5874e-02 l_g_kl: 1.0633e-02 l_freq: 9.3730e-02 
+2026-05-18 05:54:24,584 INFO: [VAE_L..][epoch:155, iter:  39,000, lr:(3.916e-04,)] [eta: 21:29:11, time (data): 0.904 (0.001)] l_g_pix: 7.5037e-02 l_g_percep: 6.5013e-02 l_g_kl: 1.1000e-02 l_freq: 8.7605e-02 
+2026-05-18 05:54:24,584 INFO: Only support single GPU validation.
+2026-05-18 06:06:12,968 INFO: Validation General_Image_Valid
+	 # psnr: 35.0534	Best: -inf @ -1 iter
+	 # ssim: 0.9363	Best: 0.9370 @ 36000 iter
+
+2026-05-18 06:07:53,749 INFO: [VAE_L..][epoch:156, iter:  39,100, lr:(3.911e-04,)] [eta: 21:52:56, time (data): 1.002 (0.234)] l_g_pix: 8.4664e-02 l_g_percep: 6.6302e-02 l_g_kl: 1.1253e-02 l_freq: 1.1713e-01 
+2026-05-18 06:08:55,251 INFO: [VAE_L..][epoch:156, iter:  39,200, lr:(3.905e-04,)] [eta: 21:50:10, time (data): 0.606 (0.001)] l_g_pix: 7.3661e-02 l_g_percep: 6.5840e-02 l_g_kl: 1.0789e-02 l_freq: 9.4655e-02 
+2026-05-18 06:10:25,284 INFO: [VAE_L..][epoch:157, iter:  39,300, lr:(3.900e-04,)] [eta: 21:48:24, time (data): 0.886 (0.239)] l_g_pix: 5.7418e-02 l_g_percep: 5.0992e-02 l_g_kl: 1.0359e-02 l_freq: 7.3577e-02 
+2026-05-18 06:11:26,679 INFO: [VAE_L..][epoch:157, iter:  39,400, lr:(3.895e-04,)] [eta: 21:45:39, time (data): 0.607 (0.001)] l_g_pix: 8.8159e-02 l_g_percep: 7.8325e-02 l_g_kl: 1.0897e-02 l_freq: 1.2258e-01 
+2026-05-18 06:12:28,625 INFO: [VAE_L..][epoch:157, iter:  39,500, lr:(3.889e-04,)] [eta: 21:42:56, time (data): 0.619 (0.001)] l_g_pix: 7.8647e-02 l_g_percep: 6.8835e-02 l_g_kl: 1.0950e-02 l_freq: 1.1609e-01 
+2026-05-18 06:13:58,225 INFO: [VAE_L..][epoch:158, iter:  39,600, lr:(3.884e-04,)] [eta: 21:41:10, time (data): 0.639 (0.001)] l_g_pix: 7.3323e-02 l_g_percep: 6.5368e-02 l_g_kl: 1.0773e-02 l_freq: 1.1279e-01 
+2026-05-18 06:14:59,164 INFO: [VAE_L..][epoch:158, iter:  39,700, lr:(3.878e-04,)] [eta: 21:38:25, time (data): 0.610 (0.001)] l_g_pix: 9.0407e-02 l_g_percep: 7.8434e-02 l_g_kl: 1.1406e-02 l_freq: 1.5874e-01 
+2026-05-18 06:16:29,027 INFO: [VAE_L..][epoch:159, iter:  39,800, lr:(3.873e-04,)] [eta: 21:36:41, time (data): 0.630 (0.001)] l_g_pix: 1.0273e-01 l_g_percep: 8.7573e-02 l_g_kl: 1.1964e-02 l_freq: 2.0521e-01 
+2026-05-18 06:17:30,815 INFO: [VAE_L..][epoch:159, iter:  39,900, lr:(3.867e-04,)] [eta: 21:33:58, time (data): 0.618 (0.001)] l_g_pix: 5.8899e-02 l_g_percep: 5.2552e-02 l_g_kl: 1.0479e-02 l_freq: 5.8789e-02 
+2026-05-18 06:18:32,733 INFO: [VAE_L..][epoch:159, iter:  40,000, lr:(3.862e-04,)] [eta: 21:31:17, time (data): 0.542 (0.003)] l_g_pix: 5.8367e-02 l_g_percep: 4.9102e-02 l_g_kl: 1.0918e-02 l_freq: 1.0372e-01 
+2026-05-18 06:18:32,734 INFO: Saving models and training states.
+2026-05-18 06:20:02,015 INFO: [VAE_L..][epoch:160, iter:  40,100, lr:(3.856e-04,)] [eta: 21:29:32, time (data): 0.885 (0.258)] l_g_pix: 7.2375e-02 l_g_percep: 6.3815e-02 l_g_kl: 1.0547e-02 l_freq: 9.6111e-02 
+2026-05-18 06:21:03,319 INFO: [VAE_L..][epoch:160, iter:  40,200, lr:(3.851e-04,)] [eta: 21:26:50, time (data): 0.750 (0.130)] l_g_pix: 7.3601e-02 l_g_percep: 6.1483e-02 l_g_kl: 1.1023e-02 l_freq: 9.7741e-02 
+2026-05-18 06:22:36,143 INFO: [VAE_L..][epoch:161, iter:  40,300, lr:(3.845e-04,)] [eta: 21:25:12, time (data): 0.928 (0.267)] l_g_pix: 1.0240e-01 l_g_percep: 8.9312e-02 l_g_kl: 1.0937e-02 l_freq: 1.7873e-01 
+2026-05-18 06:23:37,690 INFO: [VAE_L..][epoch:161, iter:  40,400, lr:(3.840e-04,)] [eta: 21:22:32, time (data): 0.772 (0.134)] l_g_pix: 9.1404e-02 l_g_percep: 8.0931e-02 l_g_kl: 1.1183e-02 l_freq: 1.3349e-01 
+2026-05-18 06:24:39,923 INFO: [VAE_L..][epoch:161, iter:  40,500, lr:(3.834e-04,)] [eta: 21:19:53, time (data): 0.621 (0.001)] l_g_pix: 7.9331e-02 l_g_percep: 6.8366e-02 l_g_kl: 1.1103e-02 l_freq: 1.4918e-01 
+2026-05-18 06:26:09,907 INFO: [VAE_L..][epoch:162, iter:  40,600, lr:(3.829e-04,)] [eta: 21:18:10, time (data): 0.761 (0.129)] l_g_pix: 6.4309e-02 l_g_percep: 5.6492e-02 l_g_kl: 1.0762e-02 l_freq: 9.9485e-02 
+2026-05-18 06:27:11,217 INFO: [VAE_L..][epoch:162, iter:  40,700, lr:(3.823e-04,)] [eta: 21:15:30, time (data): 0.612 (0.001)] l_g_pix: 1.2278e-01 l_g_percep: 1.0534e-01 l_g_kl: 1.1595e-02 l_freq: 2.0644e-01 
+2026-05-18 06:28:40,809 INFO: [VAE_L..][epoch:163, iter:  40,800, lr:(3.818e-04,)] [eta: 21:13:47, time (data): 0.756 (0.127)] l_g_pix: 7.7152e-02 l_g_percep: 6.7586e-02 l_g_kl: 1.1126e-02 l_freq: 1.4329e-01 
+2026-05-18 06:29:41,903 INFO: [VAE_L..][epoch:163, iter:  40,900, lr:(3.812e-04,)] [eta: 21:11:07, time (data): 0.610 (0.001)] l_g_pix: 1.0231e-01 l_g_percep: 8.4059e-02 l_g_kl: 1.1348e-02 l_freq: 2.0823e-01 
+2026-05-18 06:30:43,626 INFO: [VAE_L..][epoch:163, iter:  41,000, lr:(3.807e-04,)] [eta: 21:08:29, time (data): 0.614 (0.001)] l_g_pix: 9.0423e-02 l_g_percep: 8.0488e-02 l_g_kl: 1.1343e-02 l_freq: 1.3805e-01 
+2026-05-18 06:32:13,776 INFO: [VAE_L..][epoch:164, iter:  41,100, lr:(3.801e-04,)] [eta: 21:06:48, time (data): 0.620 (0.001)] l_g_pix: 6.7577e-02 l_g_percep: 5.9470e-02 l_g_kl: 1.0885e-02 l_freq: 9.0257e-02 
+2026-05-18 06:33:14,508 INFO: [VAE_L..][epoch:164, iter:  41,200, lr:(3.795e-04,)] [eta: 21:04:09, time (data): 0.613 (0.001)] l_g_pix: 6.8686e-02 l_g_percep: 5.7267e-02 l_g_kl: 1.0466e-02 l_freq: 9.5158e-02 
+2026-05-18 06:34:44,802 INFO: [VAE_L..][epoch:165, iter:  41,300, lr:(3.790e-04,)] [eta: 21:02:28, time (data): 0.916 (0.278)] l_g_pix: 8.9706e-02 l_g_percep: 7.9321e-02 l_g_kl: 1.0731e-02 l_freq: 1.1672e-01 
+2026-05-18 06:35:45,820 INFO: [VAE_L..][epoch:165, iter:  41,400, lr:(3.784e-04,)] [eta: 20:59:50, time (data): 0.759 (0.136)] l_g_pix: 7.1792e-02 l_g_percep: 6.3820e-02 l_g_kl: 1.0471e-02 l_freq: 8.4160e-02 
+2026-05-18 06:36:47,483 INFO: [VAE_L..][epoch:165, iter:  41,500, lr:(3.779e-04,)] [eta: 20:57:14, time (data): 0.615 (0.001)] l_g_pix: 7.7644e-02 l_g_percep: 6.7443e-02 l_g_kl: 1.1004e-02 l_freq: 1.2606e-01 
+2026-05-18 06:38:17,290 INFO: [VAE_L..][epoch:166, iter:  41,600, lr:(3.773e-04,)] [eta: 20:55:33, time (data): 0.761 (0.128)] l_g_pix: 7.6801e-02 l_g_percep: 6.4774e-02 l_g_kl: 1.1454e-02 l_freq: 1.2859e-01 
+2026-05-18 06:39:18,598 INFO: [VAE_L..][epoch:166, iter:  41,700, lr:(3.767e-04,)] [eta: 20:52:57, time (data): 0.612 (0.001)] l_g_pix: 9.6159e-02 l_g_percep: 8.3280e-02 l_g_kl: 1.1059e-02 l_freq: 1.3654e-01 
+2026-05-18 06:40:49,619 INFO: [VAE_L..][epoch:167, iter:  41,800, lr:(3.762e-04,)] [eta: 20:51:18, time (data): 0.766 (0.134)] l_g_pix: 7.2174e-02 l_g_percep: 6.4413e-02 l_g_kl: 1.0931e-02 l_freq: 1.1358e-01 
+2026-05-18 06:41:51,575 INFO: [VAE_L..][epoch:167, iter:  41,900, lr:(3.756e-04,)] [eta: 20:48:44, time (data): 0.616 (0.001)] l_g_pix: 6.9120e-02 l_g_percep: 6.0153e-02 l_g_kl: 1.0810e-02 l_freq: 9.3730e-02 
+2026-05-18 06:42:52,919 INFO: [VAE_L..][epoch:167, iter:  42,000, lr:(3.750e-04,)] [eta: 20:46:09, time (data): 0.614 (0.001)] l_g_pix: 8.9651e-02 l_g_percep: 7.6921e-02 l_g_kl: 1.1159e-02 l_freq: 1.4224e-01 
+2026-05-18 06:42:52,920 INFO: Only support single GPU validation.
+2026-05-18 06:54:42,127 INFO: Validation General_Image_Valid
+	 # psnr: 36.3994	Best: -inf @ -1 iter
+	 # ssim: 0.9374	Best: 0.9374 @ 42000 iter
+
+2026-05-18 06:56:22,655 INFO: [VAE_L..][epoch:168, iter:  42,100, lr:(3.745e-04,)] [eta: 21:07:15, time (data): 0.613 (0.001)] l_g_pix: 6.3415e-02 l_g_percep: 5.5307e-02 l_g_kl: 1.0916e-02 l_freq: 1.0306e-01 
+2026-05-18 06:57:24,293 INFO: [VAE_L..][epoch:168, iter:  42,200, lr:(3.739e-04,)] [eta: 21:04:36, time (data): 0.615 (0.001)] l_g_pix: 8.4642e-02 l_g_percep: 7.2761e-02 l_g_kl: 1.1274e-02 l_freq: 1.4788e-01 
+2026-05-18 06:58:54,717 INFO: [VAE_L..][epoch:169, iter:  42,300, lr:(3.733e-04,)] [eta: 21:02:53, time (data): 0.932 (0.280)] l_g_pix: 1.0072e-01 l_g_percep: 8.7521e-02 l_g_kl: 1.1728e-02 l_freq: 1.7971e-01 
+2026-05-18 06:59:55,679 INFO: [VAE_L..][epoch:169, iter:  42,400, lr:(3.728e-04,)] [eta: 21:00:13, time (data): 0.762 (0.133)] l_g_pix: 6.8191e-02 l_g_percep: 5.9644e-02 l_g_kl: 1.1274e-02 l_freq: 1.1343e-01 
+2026-05-18 07:00:57,354 INFO: [VAE_L..][epoch:169, iter:  42,500, lr:(3.722e-04,)] [eta: 20:57:36, time (data): 0.616 (0.001)] l_g_pix: 9.4027e-02 l_g_percep: 7.8933e-02 l_g_kl: 1.1014e-02 l_freq: 1.6799e-01 
+2026-05-18 07:02:26,584 INFO: [VAE_L..][epoch:170, iter:  42,600, lr:(3.716e-04,)] [eta: 20:55:51, time (data): 0.762 (0.137)] l_g_pix: 1.0846e-01 l_g_percep: 9.3040e-02 l_g_kl: 1.1685e-02 l_freq: 2.1489e-01 
+2026-05-18 07:03:27,782 INFO: [VAE_L..][epoch:170, iter:  42,700, lr:(3.710e-04,)] [eta: 20:53:13, time (data): 0.610 (0.001)] l_g_pix: 6.4544e-02 l_g_percep: 5.5154e-02 l_g_kl: 1.0832e-02 l_freq: 1.1270e-01 
+2026-05-18 07:04:58,579 INFO: [VAE_L..][epoch:171, iter:  42,800, lr:(3.705e-04,)] [eta: 20:51:31, time (data): 0.768 (0.133)] l_g_pix: 9.8458e-02 l_g_percep: 8.4505e-02 l_g_kl: 1.1523e-02 l_freq: 1.6905e-01 
+2026-05-18 07:05:59,598 INFO: [VAE_L..][epoch:171, iter:  42,900, lr:(3.699e-04,)] [eta: 20:48:54, time (data): 0.608 (0.001)] l_g_pix: 7.6147e-02 l_g_percep: 6.2847e-02 l_g_kl: 1.0694e-02 l_freq: 1.2824e-01 
+2026-05-18 07:07:01,101 INFO: [VAE_L..][epoch:171, iter:  43,000, lr:(3.693e-04,)] [eta: 20:46:18, time (data): 0.612 (0.001)] l_g_pix: 8.1896e-02 l_g_percep: 7.0650e-02 l_g_kl: 1.0836e-02 l_freq: 1.2100e-01 
+2026-05-18 07:08:29,950 INFO: [VAE_L..][epoch:172, iter:  43,100, lr:(3.687e-04,)] [eta: 20:44:33, time (data): 0.613 (0.001)] l_g_pix: 7.8812e-02 l_g_percep: 6.9691e-02 l_g_kl: 1.0698e-02 l_freq: 8.8232e-02 
+2026-05-18 07:09:31,203 INFO: [VAE_L..][epoch:172, iter:  43,200, lr:(3.682e-04,)] [eta: 20:41:57, time (data): 0.613 (0.001)] l_g_pix: 7.4096e-02 l_g_percep: 6.1392e-02 l_g_kl: 1.1303e-02 l_freq: 1.1511e-01 
+2026-05-18 07:11:01,176 INFO: [VAE_L..][epoch:173, iter:  43,300, lr:(3.676e-04,)] [eta: 20:40:14, time (data): 0.950 (0.296)] l_g_pix: 6.8470e-02 l_g_percep: 5.9998e-02 l_g_kl: 1.0541e-02 l_freq: 8.6051e-02 
+2026-05-18 07:12:02,740 INFO: [VAE_L..][epoch:173, iter:  43,400, lr:(3.670e-04,)] [eta: 20:37:40, time (data): 0.769 (0.137)] l_g_pix: 7.8706e-02 l_g_percep: 6.6957e-02 l_g_kl: 1.1216e-02 l_freq: 1.1268e-01 
+2026-05-18 07:13:04,459 INFO: [VAE_L..][epoch:173, iter:  43,500, lr:(3.664e-04,)] [eta: 20:35:06, time (data): 0.617 (0.001)] l_g_pix: 7.6329e-02 l_g_percep: 6.7617e-02 l_g_kl: 1.0493e-02 l_freq: 9.9286e-02 
+2026-05-18 07:14:34,777 INFO: [VAE_L..][epoch:174, iter:  43,600, lr:(3.659e-04,)] [eta: 20:33:25, time (data): 0.773 (0.137)] l_g_pix: 5.4531e-02 l_g_percep: 4.7439e-02 l_g_kl: 1.0564e-02 l_freq: 7.0417e-02 
+2026-05-18 07:15:35,728 INFO: [VAE_L..][epoch:174, iter:  43,700, lr:(3.653e-04,)] [eta: 20:30:50, time (data): 0.609 (0.001)] l_g_pix: 8.6090e-02 l_g_percep: 7.5246e-02 l_g_kl: 1.1452e-02 l_freq: 1.2995e-01 
+2026-05-18 07:17:06,064 INFO: [VAE_L..][epoch:175, iter:  43,800, lr:(3.647e-04,)] [eta: 20:29:09, time (data): 0.770 (0.138)] l_g_pix: 7.9108e-02 l_g_percep: 6.7967e-02 l_g_kl: 1.1131e-02 l_freq: 1.2417e-01 
+2026-05-18 07:18:07,019 INFO: [VAE_L..][epoch:175, iter:  43,900, lr:(3.641e-04,)] [eta: 20:26:35, time (data): 0.606 (0.001)] l_g_pix: 8.1302e-02 l_g_percep: 6.9102e-02 l_g_kl: 1.0588e-02 l_freq: 1.0847e-01 
+2026-05-18 07:19:08,522 INFO: [VAE_L..][epoch:175, iter:  44,000, lr:(3.635e-04,)] [eta: 20:24:03, time (data): 0.611 (0.001)] l_g_pix: 9.0749e-02 l_g_percep: 7.7692e-02 l_g_kl: 1.1645e-02 l_freq: 1.7104e-01 
+2026-05-18 07:20:37,974 INFO: [VAE_L..][epoch:176, iter:  44,100, lr:(3.629e-04,)] [eta: 20:22:20, time (data): 0.611 (0.001)] l_g_pix: 8.8201e-02 l_g_percep: 7.2723e-02 l_g_kl: 1.1343e-02 l_freq: 1.3845e-01 
+2026-05-18 07:21:39,298 INFO: [VAE_L..][epoch:176, iter:  44,200, lr:(3.624e-04,)] [eta: 20:19:49, time (data): 0.612 (0.001)] l_g_pix: 7.9686e-02 l_g_percep: 6.6541e-02 l_g_kl: 1.1263e-02 l_freq: 1.4221e-01 
+2026-05-18 07:23:09,423 INFO: [VAE_L..][epoch:177, iter:  44,300, lr:(3.618e-04,)] [eta: 20:18:08, time (data): 0.972 (0.310)] l_g_pix: 8.2063e-02 l_g_percep: 6.9762e-02 l_g_kl: 1.0844e-02 l_freq: 1.5973e-01 
+2026-05-18 07:24:11,092 INFO: [VAE_L..][epoch:177, iter:  44,400, lr:(3.612e-04,)] [eta: 20:15:37, time (data): 0.775 (0.138)] l_g_pix: 7.9494e-02 l_g_percep: 6.6284e-02 l_g_kl: 1.1512e-02 l_freq: 1.7345e-01 
+2026-05-18 07:25:12,497 INFO: [VAE_L..][epoch:177, iter:  44,500, lr:(3.606e-04,)] [eta: 20:13:06, time (data): 0.613 (0.001)] l_g_pix: 1.0442e-01 l_g_percep: 8.5317e-02 l_g_kl: 1.1203e-02 l_freq: 2.2087e-01 
+2026-05-18 07:26:41,052 INFO: [VAE_L..][epoch:178, iter:  44,600, lr:(3.600e-04,)] [eta: 20:11:23, time (data): 0.765 (0.138)] l_g_pix: 8.4242e-02 l_g_percep: 7.0585e-02 l_g_kl: 1.0578e-02 l_freq: 9.9999e-02 
+2026-05-18 07:27:42,404 INFO: [VAE_L..][epoch:178, iter:  44,700, lr:(3.594e-04,)] [eta: 20:08:53, time (data): 0.613 (0.001)] l_g_pix: 5.3129e-02 l_g_percep: 4.8116e-02 l_g_kl: 1.0190e-02 l_freq: 5.7221e-02 
+2026-05-18 07:29:12,368 INFO: [VAE_L..][epoch:179, iter:  44,800, lr:(3.588e-04,)] [eta: 20:07:12, time (data): 0.774 (0.143)] l_g_pix: 6.9935e-02 l_g_percep: 5.8076e-02 l_g_kl: 1.0708e-02 l_freq: 1.3061e-01 
+2026-05-18 07:30:13,547 INFO: [VAE_L..][epoch:179, iter:  44,900, lr:(3.583e-04,)] [eta: 20:04:42, time (data): 0.606 (0.001)] l_g_pix: 9.2479e-02 l_g_percep: 8.0501e-02 l_g_kl: 1.1357e-02 l_freq: 1.6494e-01 
+2026-05-18 07:31:15,678 INFO: [VAE_L..][epoch:179, iter:  45,000, lr:(3.577e-04,)] [eta: 20:02:14, time (data): 0.615 (0.001)] l_g_pix: 7.9299e-02 l_g_percep: 7.0245e-02 l_g_kl: 1.1219e-02 l_freq: 1.1681e-01 
+2026-05-18 07:31:15,679 INFO: Saving models and training states.
+2026-05-18 07:31:16,162 INFO: Only support single GPU validation.
+2026-05-18 07:43:03,837 INFO: Validation General_Image_Valid
+	 # psnr: 35.9610	Best: -inf @ -1 iter
+	 # ssim: 0.9382	Best: 0.9382 @ 45000 iter
+
+2026-05-18 07:44:43,439 INFO: [VAE_L..][epoch:180, iter:  45,100, lr:(3.571e-04,)] [eta: 20:20:58, time (data): 0.615 (0.001)] l_g_pix: 8.0591e-02 l_g_percep: 6.8539e-02 l_g_kl: 1.0570e-02 l_freq: 1.4796e-01 
+2026-05-18 07:45:44,862 INFO: [VAE_L..][epoch:180, iter:  45,200, lr:(3.565e-04,)] [eta: 20:18:25, time (data): 0.615 (0.001)] l_g_pix: 7.9775e-02 l_g_percep: 6.7533e-02 l_g_kl: 1.1981e-02 l_freq: 1.5157e-01 
